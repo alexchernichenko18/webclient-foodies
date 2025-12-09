@@ -1,0 +1,27 @@
+.wrap {
+  padding: 20px;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 16px;
+}
+
+h3 {
+  margin: 20px 0 10px;
+  font-size: 16px;
+  font-weight: 600;
+}
