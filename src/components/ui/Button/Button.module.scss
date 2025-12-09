@@ -1,7 +1,5 @@
 @import "../../../styles/variables.scss";
 
-$color-border: #e8e8e8;
-
 .btn {
   width: auto;
   display: flex;
@@ -118,5 +116,7 @@ $color-border: #e8e8e8;
     width: 16px;
     height: auto;
     display: inline-flex;
+    justify-content: center;
+    align-items: center;
   }
 }
