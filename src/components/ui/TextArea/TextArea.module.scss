@@ -1,0 +1,56 @@
+@import "../../../styles/variables.scss";
+
+.wrap {
+  width: 100%;
+}
+
+.field {
+  position: relative;
+  border-bottom: 1px solid $color-gray;
+  padding-bottom: 4px;
+  padding-right: 60px;
+}
+
+.textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  font-size: 16px;
+  line-height: 1.4;
+  color: $color-black;
+  overflow: hidden;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::placeholder {
+    color: $color-gray;
+  }
+}
+
+.counter {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  font-size: 16px;
+  color: $color-gray;
+}
+
+.wrap.error {
+  .field {
+    border-color: $color-error;
+  }
+
+  .counter {
+    color: $color-error;
+  }
+
+  .textarea::placeholder {
+    color: $color-error;
+  }
+}
