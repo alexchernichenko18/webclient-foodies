@@ -1,0 +1,161 @@
+@import "../../styles/variables.scss";
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 130px;
+  padding: 40px 0;
+}
+
+.dark {
+  color: $color-white;
+}
+
+.light {
+  color: $color-black;
+}
+
+.inner {
+  margin: 0 auto;
+  padding: 0 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 24px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.navLink {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  color: inherit;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.navLinkActive {
+  border-color: $color-border;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.authToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  background-color: $color-white;
+}
+
+.signInButton {
+  border: 1px solid $color-white;
+
+  &:hover {
+    border: 1px solid $color-gray;
+  }
+}
+
+.signUpButton {
+  border: 1px solid $color-gray;
+}
+
+.dark .authToggle {
+  background-color: $color-white;
+}
+
+.profileWrap {
+  position: relative;
+}
+
+.profile {
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  gap: 8px;
+  font-size: 12px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  background-color: $color-dark;
+  color: $color-white;
+  border-radius: 30px;
+  padding-right: 14px;
+}
+
+.light .profile {
+  background-color: $color-black;
+  color: $color-white;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: $color-gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.name {
+  font-size: 12px;
+}
+
+.chevron {
+  font-size: 10px;
+}
+
+.profileMenu {
+  position: absolute;
+  right: 14px;
+  top: calc(100% + 8px);
+  min-width: 160px;
+  padding: 8px 0;
+  border-radius: 16px;
+  border: 1px solid $color-border;
+  background-color: $color-black;
+  color: $color-white;
+  display: flex;
+  flex-direction: column;
+}
+
+.profileMenuItem {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+
+  svg {
+    width: 16px;
+    height: auto;
+  }
+}

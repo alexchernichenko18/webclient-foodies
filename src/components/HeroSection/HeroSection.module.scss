@@ -1,0 +1,15 @@
+@import "../../styles/variables.scss";
+
+.wrap {
+  width: 100%;
+  padding: 20px;
+  margin-top: -130px;
+}
+
+.inner {
+  width: 100%;
+  height: auto;
+  min-height: calc(100vh - 40px);
+  background: $color-black;
+  border-radius: 30px;
+}
