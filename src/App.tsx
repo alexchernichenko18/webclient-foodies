@@ -30,10 +30,10 @@ function App() {
           <Route path="/recipe/:id" element={<Recipe />} />
           <Route path="/profile" element={<MyProfile />} />
           <Route path="/profile/:id" element={<Profile />} />
-          <Route path="/test" element={<Test />} />
         </Route>
 
         {/* 404 -> redirect */}
+        <Route path="/test" element={<Test />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
