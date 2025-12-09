@@ -10,30 +10,33 @@ import Recipe from "./pages/Recipe";
 import MyProfile from "./pages/MyProfile";
 import Profile from "./pages/Profile";
 import Test from "./pages/Test";
+import Modals from "./components/Modals/Modals";
 
 function App() {
   return (
-    <Routes>
+    <>
+      <Modals />
 
-      {/* PUBLIC LAYOUT */}
-      <Route element={<LayoutPublic />}>
-        <Route path="/" element={<Main />} />
-        <Route path="/category/:id" element={<Category />} />
-      </Route>
+      <Routes>
+        {/* PUBLIC LAYOUT */}
+        <Route element={<LayoutPublic />}>
+          <Route path="/" element={<Main />} />
+          <Route path="/category/:id" element={<Category />} />
+        </Route>
 
-      {/* PRIVATE LAYOUT */}
-      <Route element={<LayoutPrivate />}>
-        <Route path="/add-recipe" element={<AddRecipe />} />
-        <Route path="/recipe/:id" element={<Recipe />} />
-        <Route path="/profile" element={<MyProfile />} />
-        <Route path="/profile/:id" element={<Profile />} />
-        <Route path="/test" element={<Test />} />
-      </Route>
+        {/* PRIVATE LAYOUT */}
+        <Route element={<LayoutPrivate />}>
+          <Route path="/add-recipe" element={<AddRecipe />} />
+          <Route path="/recipe/:id" element={<Recipe />} />
+          <Route path="/profile" element={<MyProfile />} />
+          <Route path="/profile/:id" element={<Profile />} />
+          <Route path="/test" element={<Test />} />
+        </Route>
 
-      {/* 404 -> redirect */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-
-    </Routes>
+        {/* 404 -> redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
 

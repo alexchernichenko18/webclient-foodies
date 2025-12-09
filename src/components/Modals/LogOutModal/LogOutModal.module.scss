@@ -1,0 +1,22 @@
+@import "../../../styles/variables.scss";
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.text {
+  margin: 0 0 8px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.logoutButton {
+  margin-top: 8px;
+}
+
+.cancelButton {
+  margin-top: 4px;
+}

@@ -1,25 +1,27 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
-
 import Button from "../ui/Button";
-
 import styles from "./Header.module.scss";
-
 import { ReactComponent as IconChevronDown } from "../../assets/icons/icon-chevron-down.svg";
 import { ReactComponent as IconArrowUp } from "../../assets/icons/icon-arrow-up.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { openLogOutModal, openSignInModal, openSignUpModal } from "../../store/slices/modalSlice";
 
 type HeaderVariant = "dark" | "light";
 
 interface HeaderProps {
   variant?: HeaderVariant;
-  isAuthenticated: boolean;
 }
 
-const Header = ({ variant = "dark", isAuthenticated }: HeaderProps) => {
+const Header = ({ variant = "dark" }: HeaderProps) => {
   const isDark = variant === "dark";
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement | null>(null);
+
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   useEffect(() => {
     if (!isProfileOpen) return;
@@ -42,6 +44,18 @@ const Header = ({ variant = "dark", isAuthenticated }: HeaderProps) => {
     [styles.light]: !isDark,
   });
 
+  const onSignInClickHandler = () => {
+    dispatch(openSignInModal());
+  }
+
+  const onSignUpClickHandler = () => {
+    dispatch(openSignUpModal());
+  }
+
+  const onLogoutHandler = () => {
+    dispatch(openLogOutModal());
+  }
+
   return (
     <header className={headerClassName}>
       <div className={styles.inner}>
@@ -61,10 +75,10 @@ const Header = ({ variant = "dark", isAuthenticated }: HeaderProps) => {
         <div className={styles.right}>
           {!isAuthenticated ? (
             <div className={styles.authToggle}>
-              <Button variant="light" size="small" className={styles.signInButton}>
+              <Button variant="light" size="small" className={styles.signInButton} onClick={onSignInClickHandler}>
                 SIGN IN
               </Button>
-              <Button variant="outlined-dark" size="small" className={styles.signUpButton}>
+              <Button variant="outlined-dark" size="small" className={styles.signUpButton} onClick={onSignUpClickHandler}>
                 SIGN UP
               </Button>
             </div>
@@ -87,7 +101,7 @@ const Header = ({ variant = "dark", isAuthenticated }: HeaderProps) => {
                   <Link to="/profile" className={styles.profileMenuItem}>
                     PROFILE
                   </Link>
-                  <button type="button" className={styles.profileMenuItem}>
+                  <button type="button" className={styles.profileMenuItem} onClick={onLogoutHandler}>
                     LOG OUT
                     <IconArrowUp />
                   </button>
