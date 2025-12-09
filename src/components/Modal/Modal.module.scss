@@ -1,0 +1,54 @@
+@import "../../styles/variables.scss";
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal {
+  position: relative;
+  width: calc(100% - 32px);
+  max-width: 560px;
+  border-radius: 30px;
+  padding: 80px;
+  background-color: $color-white;
+  color: $color-black;
+
+  @media (max-width: 768px) {
+    padding: 60px 30px;
+  }
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 800;
+  margin-top: 0;
+  margin-bottom: 40px;
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+    margin-bottom: 32px;
+  }
+}
+
+.content {
+  width: 100%;
+}
+
+.close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 4px;
+}
