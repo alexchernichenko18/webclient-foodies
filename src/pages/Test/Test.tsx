@@ -40,9 +40,9 @@ const Test = () => {
   const [category, setCategory] = useState("");
   const [category2, setCategory2] = useState(categoryOptions[1].value);
 
-
   return (
     <div className={styles.wrap}>
+      <h1>Test page</h1>
       <div className={styles.row}>
         <div>
           <h3>Inputs</h3>

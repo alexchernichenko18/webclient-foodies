@@ -32,8 +32,9 @@ function App() {
           <Route path="/profile/:id" element={<Profile />} />
         </Route>
 
-        {/* 404 -> redirect */}
+        {/* Test page */}
         <Route path="/test" element={<Test />} />
+        {/* 404 -> redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
