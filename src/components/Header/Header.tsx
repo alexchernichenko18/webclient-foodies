@@ -22,6 +22,7 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
 
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     if (!isProfileOpen) return;
@@ -89,8 +90,8 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
                 className={styles.profile}
                 onClick={() => setIsProfileOpen(prev => !prev)}
               >
-                <div className={styles.avatar}>V</div>
-                <span className={styles.name}>VICTORIA</span>
+                <div className={styles.avatar}>{user?.name?.charAt(0)}</div>
+                <span className={styles.name}>{user?.name}</span>
                 <span className={styles.chevron}>
                   <IconChevronDown />
                 </span>

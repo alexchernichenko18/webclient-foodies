@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { RootState } from "../../../store";
+import { AppDispatch, RootState } from "../../../store";
 import { closeSignInModal, openSignUpModal } from "../../../store/slices/modalSlice";
-import { setAuth } from "../../../store/slices/authSlice";
+import { loginThunk, resetAuthError } from "../../../store/slices/authSlice";
 
 import Modal from "../../Modal/Modal";
 import Input from "../../ui/Input";
@@ -15,31 +15,48 @@ import styles from "./SignInModal.module.scss";
 
 const SignInModal = () => {
   const isOpen = useSelector((state: RootState) => state.modal.signInOpen);
-  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const isFormValid = isValidEmail(email) && isValidPassword(password);
 
-  const handleClose = () => dispatch(closeSignInModal());
+  const handleClose = () => {
+    setEmail("");
+    setPassword("");
+    dispatch(resetAuthError());
+    dispatch(closeSignInModal());
+  };
 
   const goToSignUpHandler = () => {
     handleClose();
     dispatch(openSignUpModal());
   };
 
-  const handleSubmit = () => {
-    if (!isFormValid) return;
+  const handleSubmit = async () => {
+    if (!isFormValid || loading) return;
 
-    dispatch(setAuth(true));
-    handleClose();
+    try {
+      await dispatch(
+        loginThunk({
+          email,
+          password,
+          sessionData: {
+            source: "web",
+          },
+        }),
+      ).unwrap();
+
+      handleClose();
+    } catch {
+    }
   };
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="SIGN IN">
       <div className={styles.content}>
-
         <Input
           placeholder="Email*"
           value={email}
@@ -55,14 +72,16 @@ const SignInModal = () => {
           className={styles.input}
         />
 
+        {error && <div className={styles.error}>{error}</div>}
+
         <Button
           variant="dark"
           expanded
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
           onClick={handleSubmit}
           className={styles.submitButton}
         >
-          SIGN IN
+          {loading ? "SIGNING IN..." : "SIGN IN"}
         </Button>
 
         <div className={styles.bottomText} onClick={goToSignUpHandler}>

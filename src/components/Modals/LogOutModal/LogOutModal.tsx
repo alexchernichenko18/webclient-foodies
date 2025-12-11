@@ -1,9 +1,8 @@
-// src/components/modals/LogOutModal/LogOutModal.tsx
 import { useDispatch, useSelector } from "react-redux";
 
 import { RootState } from "../../../store";
 import { closeLogOutModal } from "../../../store/slices/modalSlice";
-import { setAuth } from "../../../store/slices/authSlice";
+import { logoutThunk } from "../../../store/slices/authSlice";
 
 import Modal from "../../Modal/Modal";
 import Button from "../../ui/Button";
@@ -16,15 +15,15 @@ const LogOutModal = () => {
 
   const handleClose = () => dispatch(closeLogOutModal());
 
-  const handleLogout = () => {
-    dispatch(setAuth(false));
+  const handleLogout = async () => {
+    await (dispatch as any)(logoutThunk());
     handleClose();
   };
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="ARE YOU LOGGING OUT?">
       <div className={styles.content}>
-        <p className={styles.text}>You can always log back in at my time.</p>
+        <p className={styles.text}>You can always log back in at any time.</p>
 
         <Button
           variant="dark"

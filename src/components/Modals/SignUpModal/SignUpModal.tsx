@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { RootState } from "../../../store";
+import { AppDispatch, RootState } from "../../../store";
 import { closeSignUpModal, openSignInModal } from "../../../store/slices/modalSlice";
-import { setAuth } from "../../../store/slices/authSlice";
+import { registerThunk, resetAuthError } from "../../../store/slices/authSlice";
 
 import Modal from "../../Modal/Modal";
 import Input from "../../ui/Input";
@@ -15,7 +15,8 @@ import styles from "./SignUpModal.module.scss";
 
 const SignUpModal = () => {
   const isOpen = useSelector((state: RootState) => state.modal.signUpOpen);
-  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,24 +27,42 @@ const SignUpModal = () => {
     isValidEmail(email) &&
     isValidPassword(password);
 
-  const handleClose = () => dispatch(closeSignUpModal());
+  const handleClose = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+    dispatch(resetAuthError());
+    dispatch(closeSignUpModal());
+  };
 
   const goToSignInHandler = () => {
     handleClose();
     dispatch(openSignInModal());
   };
 
-  const handleSubmit = () => {
-    if (!isFormValid) return;
+  const handleSubmit = async () => {
+    if (!isFormValid || loading) return;
 
-    dispatch(setAuth(true));
-    handleClose();
+    try {
+      await dispatch(
+        registerThunk({
+          name,
+          email,
+          password,
+          sessionData: {
+            source: "web",
+          },
+        }),
+      ).unwrap();
+
+      handleClose();
+    } catch {
+    }
   };
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="CREATE ACCOUNT">
       <div className={styles.content}>
-
         <Input
           placeholder="Name*"
           value={name}
@@ -66,14 +85,16 @@ const SignUpModal = () => {
           className={styles.input}
         />
 
+        {error && <div className={styles.error}>{error}</div>}
+
         <Button
           variant="dark"
           expanded
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
           onClick={handleSubmit}
           className={styles.submitButton}
         >
-          CREATE
+          {loading ? "CREATING..." : "CREATE"}
         </Button>
 
         <div className={styles.bottomText} onClick={goToSignInHandler}>
