@@ -2,24 +2,31 @@
  * Маппінг назв категорій до зображень з підтримкою responsive images
  *
  * Структура:
- * - mobile/ - 340×340px для екранів до 768px
- * - tablet/ - 460×460px для екранів 768px-1439px
- * - desktop/ - 660×660px для екранів 1440px+
+ * - mobile/ - 343×250px (і 686×500 для 2x)
+ * - tablet/small - 342×369px (і 684×738 для 2x)
+ * - tablet/large - 704×369px (і 1408×738 для 2x)
+ * - desktop/small - 325×369px (і 650×738 для 2x)
+ * - desktop/large - 590×369px (і 1180×738 для 2x)
  */
 
 // TODO: Після оптимізації зображень, додайте імпорти для кожної категорії та breakpoint
 // Приклад:
-// import beefMobile from "../../assets/images/categories/mobile/beef.webp";
-// import beefTablet from "../../assets/images/categories/tablet/beef.webp";
-// import beefDesktop from "../../assets/images/categories/desktop/beef.webp";
+// import beefMobile1x from "../assets/images/categories/mobile/beef@1x.webp";
+// import beefMobile2x from "../assets/images/categories/mobile/beef@2x.webp";
+// ... аналогічно для tablet/desktop small/large
+
+export interface ImageSource2x {
+  src1x: string;
+  src2x?: string;
+}
 
 // Тип для responsive зображення
 export interface ResponsiveImage {
-  mobile: string;
-  tablet: string;
-  tabletLarge?: string; // Для великих карток на tablet (704×369)
-  desktop: string;
-  desktopLarge?: string; // Для великих карток на desktop (590×369)
+  mobile: string | ImageSource2x;
+  tablet: string | ImageSource2x; // small
+  tabletLarge?: string | ImageSource2x; // large-tablet
+  desktop: string | ImageSource2x; // small
+  desktopLarge?: string | ImageSource2x; // large-desktop
 }
 
 // Маппінг назв категорій до responsive зображень
@@ -119,6 +126,19 @@ const categoryImageMap: Record<string, ResponsiveImage> = {
   },
 };
 
+const to2xUrl = (url: string): string => {
+  // Unsplash підтримує dpr=2. Якщо буде локальний import — src2x задасте явно.
+  if (url.includes("dpr=")) return url;
+  return url.includes("?") ? `${url}&dpr=2` : `${url}?dpr=2`;
+};
+
+const normalize2x = (value: string | ImageSource2x): Required<ImageSource2x> => {
+  if (typeof value === "string") {
+    return { src1x: value, src2x: to2xUrl(value) };
+  }
+  return { src1x: value.src1x, src2x: value.src2x ?? to2xUrl(value.src1x) };
+};
+
 /**
  * Отримує URL зображення для категорії з урахуванням розміру екрану та розміру картки
  * @param categoryName - Назва категорії
@@ -132,19 +152,53 @@ export const getCategoryImageUrl = (categoryName: string, breakpoint: "mobile" |
 
   // Mobile завжди використовує один розмір
   if (breakpoint === "mobile") {
-    return images.mobile;
+    return typeof images.mobile === "string" ? images.mobile : images.mobile.src1x;
   }
 
   // Для tablet та desktop використовуємо small або large залежно від розміру картки
   if (breakpoint === "tablet") {
-    return imageSize === "large" ? images.tabletLarge : images.tablet;
+    const variant = imageSize === "large" ? images.tabletLarge : images.tablet;
+    if (!variant) return undefined;
+    return typeof variant === "string" ? variant : variant.src1x;
   }
 
   if (breakpoint === "desktop") {
-    return imageSize === "large" ? images.desktopLarge : images.desktop;
+    const variant = imageSize === "large" ? images.desktopLarge : images.desktop;
+    if (!variant) return undefined;
+    return typeof variant === "string" ? variant : variant.src1x;
   }
 
-  return images.desktop;
+  return typeof images.desktop === "string" ? images.desktop : images.desktop.src1x;
+};
+
+/**
+ * Повертає src + srcSet (1x/2x) для <img srcSet> з урахуванням breakpoint та розміру картки
+ */
+export const getCategoryImageSourceSet = (
+  categoryName: string,
+  breakpoint: "mobile" | "tablet" | "desktop" = "desktop",
+  imageSize: "small" | "large" = "small"
+): { src: string; srcSet: string } | undefined => {
+  const images = categoryImageMap[categoryName];
+  if (!images) return undefined;
+
+  let variant: string | ImageSource2x | undefined;
+
+  if (breakpoint === "mobile") {
+    variant = images.mobile;
+  } else if (breakpoint === "tablet") {
+    variant = imageSize === "large" ? images.tabletLarge : images.tablet;
+  } else {
+    variant = imageSize === "large" ? images.desktopLarge : images.desktop;
+  }
+
+  if (!variant) return undefined;
+
+  const normalized = normalize2x(variant);
+  return {
+    src: normalized.src1x,
+    srcSet: `${normalized.src1x} 1x, ${normalized.src2x} 2x`,
+  };
 };
 
 /**

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { fetchCategories } from "../../store/slices/categoriesSlice";
-import { getCategoryImageUrl } from "../../utils/categoryImages";
+import { getCategoryImageSourceSet } from "../../utils/categoryImages";
 import { getTabletCardSize, getDesktopCardSize, getImageSize, type CardSize } from "../../utils/categoryLayout";
 import CategoryCard from "../CategoryCard";
 import AllCategoriesCard from "../AllCategoriesCard";
@@ -71,9 +71,9 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
 
         // Визначаємо розмір зображення для завантаження
         const imageSize = getImageSize(category.name, breakpoint, cardSize);
-        const imageUrl = getCategoryImageUrl(category.name, breakpoint, imageSize);
+        const image = getCategoryImageSourceSet(category.name, breakpoint, imageSize);
 
-        return <CategoryCard key={category.id} category={category} onClick={() => handleCategoryClick(category.id)} imageUrl={imageUrl} size={cardSize} />;
+        return <CategoryCard key={category.id} category={category} onArrowClick={() => handleCategoryClick(category.id)} image={image} size={cardSize} />;
       })}
       <AllCategoriesCard onClick={handleAllCategoriesClick} />
     </div>
