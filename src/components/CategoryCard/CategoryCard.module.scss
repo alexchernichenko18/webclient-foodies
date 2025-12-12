@@ -3,7 +3,6 @@
 .card {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
   border-radius: 8px;
   border: none;
   background-color: $color-gray;
@@ -13,6 +12,34 @@
   cursor: pointer;
   overflow: hidden;
   transition: transform 0.2s ease;
+
+  // Mobile: 343 × 250px
+  aspect-ratio: 343 / 250;
+
+  @media (min-width: 768px) {
+    // Tablet: за замовчуванням маленькі картки 342 × 369px
+    aspect-ratio: 342 / 369;
+  }
+
+  @media (min-width: 1440px) {
+    // Desktop: за замовчуванням маленькі картки 325 × 369px
+    aspect-ratio: 325 / 369;
+  }
+
+  // Великі картки для tablet (704 × 369px)
+  &[data-size="large-tablet"] {
+    @media (min-width: 768px) and (max-width: 1439px) {
+      grid-column: span 2; // Займає 2 колонки
+      aspect-ratio: 704 / 369;
+    }
+  }
+
+  // Великі картки для desktop (590 × 369px)
+  &[data-size="large-desktop"] {
+    @media (min-width: 1440px) {
+      aspect-ratio: 590 / 369;
+    }
+  }
 
   &:hover {
     transform: scale(1.02);
