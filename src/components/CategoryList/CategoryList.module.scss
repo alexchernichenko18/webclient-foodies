@@ -1,0 +1,30 @@
+@import "../../styles/variables";
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+  }
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: $color-gray;
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+  color: $color-error;
+}
