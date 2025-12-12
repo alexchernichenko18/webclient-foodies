@@ -3,7 +3,20 @@
 .card {
   position: relative;
   width: 100%;
-  aspect-ratio: 1;
+
+  // Mobile: 343 × 250px
+  aspect-ratio: 343 / 250;
+
+  @media (min-width: 768px) {
+    // Tablet: small 342 × 369px
+    aspect-ratio: 342 / 369;
+  }
+
+  @media (min-width: 1440px) {
+    // Desktop: small 325 × 369px
+    aspect-ratio: 325 / 369;
+  }
+
   border-radius: 8px;
   border: none;
   background-color: $color-black;
