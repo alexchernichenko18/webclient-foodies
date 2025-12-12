@@ -2,24 +2,34 @@ import { ReactComponent as ArrowIcon } from "../../assets/icons/icon-arrow-up.sv
 import styles from "./CategoryCard.module.scss";
 import type { Category } from "../../types/category";
 
+export interface CategoryCardImageSourceSet {
+  src: string;
+  srcSet?: string;
+}
+
 interface CategoryCardProps {
   category: Category;
-  onClick: () => void;
-  imageUrl?: string;
+  onArrowClick: () => void;
+  image?: CategoryCardImageSourceSet;
   size?: "small" | "large-tablet" | "large-desktop";
 }
 
-const CategoryCard = ({ category, onClick, imageUrl, size }: CategoryCardProps) => {
-  const backgroundImage = imageUrl ? { backgroundImage: `url(${imageUrl})` } : {};
+const CategoryCard = ({ category, onArrowClick, image, size }: CategoryCardProps) => {
   const dataSize = size ? { "data-size": size } : {};
 
   return (
-    <button type="button" className={styles.card} onClick={onClick} style={backgroundImage} {...dataSize}>
+    <div className={styles.card} {...dataSize}>
+      {image?.src ? <img className={styles.image} src={image.src} srcSet={image.srcSet} alt={category.name} loading="lazy" decoding="async" /> : null}
+
       <div className={styles.overlay}>
-        <span className={styles.name}>{category.name}</span>
-        <ArrowIcon className={styles.icon} />
+        <div className={styles.badge}>
+          <span className={styles.name}>{category.name}</span>
+          <button type="button" className={styles.action} onClick={onArrowClick} aria-label={`Відкрити рецепти: ${category.name}`}>
+            <ArrowIcon className={styles.icon} />
+          </button>
+        </div>
       </div>
-    </button>
+    </div>
   );
 };
 
