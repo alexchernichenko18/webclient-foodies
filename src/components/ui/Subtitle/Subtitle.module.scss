@@ -1,0 +1,17 @@
+@import "../../../styles/variables";
+
+.subtitle {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.5;
+  color: $color-black;
+  margin: 0;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (min-width: 1440px) {
+    font-size: 18px;
+  }
+}

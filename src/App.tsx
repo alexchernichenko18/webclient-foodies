@@ -9,7 +9,6 @@ import AddRecipe from "./pages/AddRecipe";
 import Recipe from "./pages/Recipe";
 import MyProfile from "./pages/MyProfile";
 import Profile from "./pages/Profile";
-import Test from "./pages/Test";
 import Modals from "./components/Modals/Modals";
 
 function App() {
@@ -32,8 +31,6 @@ function App() {
           <Route path="/profile/:id" element={<Profile />} />
         </Route>
 
-        {/* Test page */}
-        <Route path="/test" element={<Test />} />
         {/* 404 -> redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
