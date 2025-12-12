@@ -64,13 +64,13 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
         // Визначаємо розмір картки залежно від breakpoint
         let cardSize: CardSize = "small";
         if (breakpoint === "tablet") {
-          cardSize = getTabletCardSize(category.name, index);
+          cardSize = getTabletCardSize(index);
         } else if (breakpoint === "desktop") {
-          cardSize = getDesktopCardSize(category.name, index);
+          cardSize = getDesktopCardSize(index);
         }
 
         // Визначаємо розмір зображення для завантаження
-        const imageSize = getImageSize(category.name, breakpoint, cardSize);
+        const imageSize = getImageSize(breakpoint, cardSize);
         const image = getCategoryImageSourceSet(category.name, breakpoint, imageSize);
 
         return <CategoryCard key={category.id} category={category} onArrowClick={() => handleCategoryClick(category.id)} image={image} size={cardSize} />;

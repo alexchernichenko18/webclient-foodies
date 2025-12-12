@@ -28,50 +28,60 @@ export interface CategoryLayout {
 
 /**
  * Визначає розмір картки для категорії на tablet на основі позиції
- * @param categoryName - Назва категорії (для додаткової перевірки)
  * @param index - Індекс категорії в масиві (0-based)
  * @returns Розмір картки
  */
-export const getTabletCardSize = (categoryName: string, index: number): CardSize => {
-  // Великі картки на tablet (704×369) за індексами: 2, 5, 6
-  // Але також перевіряємо назви для надійності
-  const largeTabletIndices = [2, 5, 6];
-  const largeTabletNames = ["Desserts", "Dessert", "Goat", "Pork"];
+export const getTabletCardSize = (index: number): CardSize => {
+  // Патерн з макету для 11 категорій (0..10) + окрема картка ALL CATEGORIES в кінці:
+  // Ряд 1: S,S -> 0,1
+  // Ряд 2: L   -> 2
+  // Ряд 3: S,S -> 3,4
+  // Ряд 4: S,S -> 5,6
+  // Ряд 5: L   -> 7
+  // Ряд 6: S,S -> 8,9
+  // Ряд 7: S + ALL -> 10 (+ ALL окремо)
+  const pattern: CardSize[] = ["small", "small", "large-tablet", "small", "small", "small", "small", "large-tablet", "small", "small", "small"];
 
-  if (largeTabletIndices.includes(index) || largeTabletNames.includes(categoryName)) {
-    return "large-tablet";
-  }
-
-  return "small";
+  return pattern[index] ?? "small";
 };
 
 /**
  * Визначає розмір картки для категорії на desktop на основі позиції
- * @param categoryName - Назва категорії (для додаткової перевірки)
  * @param index - Індекс категорії в масиві (0-based)
  * @returns Розмір картки
  */
-export const getDesktopCardSize = (categoryName: string, index: number): CardSize => {
-  // Великі картки на desktop (590×369) за індексами: 2, 3, 6, 9
-  // Але також перевіряємо назви для надійності
-  const largeDesktopIndices = [2, 3, 6, 9];
-  const largeDesktopNames = ["Desserts", "Dessert", "Miscellaneous", "Pasta", "Pork"];
+export const getDesktopCardSize = (index: number): CardSize => {
+  // Патерн з макету (перші 12 слотів; якщо категорій менше — зайві не використовуються):
+  // Row1: S,S,L
+  // Row2: L,S,S
+  // Row3: S,L,S
+  // Row4: L,S,S
+  // У термінах "4 базові колонки": S=span1, L=span2.
+  const pattern: CardSize[] = [
+    "small", // 0
+    "small", // 1
+    "large-desktop", // 2
+    "large-desktop", // 3
+    "small", // 4
+    "small", // 5
+    "small", // 6
+    "large-desktop", // 7
+    "small", // 8
+    "large-desktop", // 9
+    "small", // 10
+    "small", // 11
+  ];
 
-  if (largeDesktopIndices.includes(index) || largeDesktopNames.includes(categoryName)) {
-    return "large-desktop";
-  }
-
-  return "small";
+  return pattern[index] ?? "small";
 };
 
 /**
  * Визначає розмір зображення для завантаження
- * @param categoryName - Назва категорії
  * @param breakpoint - Breakpoint
  * @param cardSize - Розмір картки
  * @returns Розмір зображення ('small' або 'large')
  */
-export const getImageSize = (categoryName: string, breakpoint: "mobile" | "tablet" | "desktop", cardSize: CardSize): "small" | "large" => {
+export const getImageSize = (breakpoint: "mobile" | "tablet" | "desktop", cardSize: CardSize): "small" | "large" => {
   if (breakpoint === "mobile") {
     return "small"; // Всі mobile зображення однакового розміру (343×250)
   }
