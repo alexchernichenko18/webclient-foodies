@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { fetchCategories } from "../../store/slices/categoriesSlice";
+import { getCategoryImageUrl } from "../../utils/categoryImages";
 import CategoryCard from "../CategoryCard";
 import AllCategoriesCard from "../AllCategoriesCard";
 import styles from "./CategoryList.module.scss";
@@ -39,9 +40,10 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
 
   return (
     <div className={styles.list}>
-      {categories.map((category) => (
-        <CategoryCard key={category.id} category={category} onClick={() => handleCategoryClick(category.id)} />
-      ))}
+      {categories.map((category) => {
+        const imageUrl = getCategoryImageUrl(category.name);
+        return <CategoryCard key={category.id} category={category} onClick={() => handleCategoryClick(category.id)} imageUrl={imageUrl} />;
+      })}
       <AllCategoriesCard onClick={handleAllCategoriesClick} />
     </div>
   );
