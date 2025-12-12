@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { fetchCategories } from "../../store/slices/categoriesSlice";
 import { getCategoryImageUrl } from "../../utils/categoryImages";
+import { getTabletCardSize, getDesktopCardSize, getImageSize, type CardSize } from "../../utils/categoryLayout";
 import CategoryCard from "../CategoryCard";
 import AllCategoriesCard from "../AllCategoriesCard";
 import styles from "./CategoryList.module.scss";
@@ -14,6 +15,25 @@ interface CategoryListProps {
 const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories, loading, error } = useSelector((state: RootState) => state.categories);
+  const [breakpoint, setBreakpoint] = useState<"mobile" | "tablet" | "desktop">("desktop");
+
+  // Визначаємо breakpoint на основі ширини екрану
+  useEffect(() => {
+    const updateBreakpoint = () => {
+      const width = window.innerWidth;
+      if (width < 768) {
+        setBreakpoint("mobile");
+      } else if (width < 1440) {
+        setBreakpoint("tablet");
+      } else {
+        setBreakpoint("desktop");
+      }
+    };
+
+    updateBreakpoint();
+    window.addEventListener("resize", updateBreakpoint);
+    return () => window.removeEventListener("resize", updateBreakpoint);
+  }, []);
 
   // Завантажуємо категорії при монтуванні, якщо їх ще немає
   React.useEffect(() => {
@@ -40,9 +60,20 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
 
   return (
     <div className={styles.list}>
-      {categories.map((category) => {
-        const imageUrl = getCategoryImageUrl(category.name);
-        return <CategoryCard key={category.id} category={category} onClick={() => handleCategoryClick(category.id)} imageUrl={imageUrl} />;
+      {categories.map((category, index) => {
+        // Визначаємо розмір картки залежно від breakpoint
+        let cardSize: CardSize = "small";
+        if (breakpoint === "tablet") {
+          cardSize = getTabletCardSize(category.name, index);
+        } else if (breakpoint === "desktop") {
+          cardSize = getDesktopCardSize(category.name, index);
+        }
+
+        // Визначаємо розмір зображення для завантаження
+        const imageSize = getImageSize(category.name, breakpoint, cardSize);
+        const imageUrl = getCategoryImageUrl(category.name, breakpoint, imageSize);
+
+        return <CategoryCard key={category.id} category={category} onClick={() => handleCategoryClick(category.id)} imageUrl={imageUrl} size={cardSize} />;
       })}
       <AllCategoriesCard onClick={handleAllCategoriesClick} />
     </div>

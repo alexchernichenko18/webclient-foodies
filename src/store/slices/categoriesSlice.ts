@@ -42,7 +42,9 @@ const categoriesSlice = createSlice({
       })
       .addCase(fetchCategories.fulfilled, (state, action: PayloadAction<Category[]>) => {
         state.loading = false;
-        state.categories = action.payload || [];
+        // Сортуємо категорії по алфавіту
+        const sortedCategories = [...(action.payload || [])].sort((a, b) => a.name.localeCompare(b.name));
+        state.categories = sortedCategories;
       })
       .addCase(fetchCategories.rejected, (state, action) => {
         state.loading = false;
