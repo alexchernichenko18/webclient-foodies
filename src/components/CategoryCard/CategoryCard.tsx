@@ -1,11 +1,7 @@
 import { ReactComponent as ArrowIcon } from "../../assets/icons/icon-arrow-up.svg";
 import styles from "./CategoryCard.module.scss";
 import type { Category } from "../../types/category";
-
-export interface CategoryCardImageSourceSet {
-  src: string;
-  srcSet?: string;
-}
+import type { CategoryCardImageSourceSet } from "../../utils/categoryImages";
 
 interface CategoryCardProps {
   category: Category;
@@ -19,7 +15,7 @@ const CategoryCard = ({ category, onArrowClick, image, size }: CategoryCardProps
 
   return (
     <div className={styles.card} {...dataSize}>
-      {image?.src ? <img className={styles.image} src={image.src} srcSet={image.srcSet} alt={category.name} loading="lazy" decoding="async" /> : null}
+      {image ? <img className={styles.image} src={image.src} srcSet={image.srcSet} alt={category.name} loading="lazy" decoding="async" /> : null}
 
       <div className={styles.overlay}>
         <div className={styles.badge}>

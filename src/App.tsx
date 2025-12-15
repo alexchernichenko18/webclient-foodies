@@ -4,6 +4,7 @@ import LayoutPublic from "./layouts/LayoutPublic";
 import LayoutPrivate from "./layouts/LayoutPrivate";
 
 import Main from "./pages/Main";
+import Test from "./pages/Test";
 import Category from "./pages/Category";
 import AddRecipe from "./pages/AddRecipe";
 import Recipe from "./pages/Recipe";
@@ -31,6 +32,8 @@ function App() {
           <Route path="/profile/:id" element={<Profile />} />
         </Route>
 
+        {/* Test page */}
+        <Route path="/test" element={<Test />} />
         {/* 404 -> redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
