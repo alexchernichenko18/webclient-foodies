@@ -1,0 +1,40 @@
+.breadcrumbs {
+  margin: 24px 0 16px;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0.8;
+}
+
+.link {
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.current {
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.sep {
+  opacity: 0.6;
+}
