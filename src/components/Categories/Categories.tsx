@@ -10,9 +10,13 @@ interface CategoriesProps {
 const Categories = ({ onCategoryClick }: CategoriesProps) => {
   return (
     <section className={styles.categories}>
-      <MainTitle>CATEGORIES</MainTitle>
-      <Subtitle>Discover a limitless world of culinary possibilities and enjoy exquisite recipes that combine taste, style and the warm atmosphere of the kitchen.</Subtitle>
-      <CategoryList onCategoryClick={onCategoryClick} />
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <MainTitle>CATEGORIES</MainTitle>
+          <Subtitle>Discover a limitless world of culinary possibilities and enjoy exquisite recipes that combine taste, style and the warm atmosphere of the kitchen.</Subtitle>
+        </div>
+        <CategoryList onCategoryClick={onCategoryClick} />
+      </div>
     </section>
   );
 };
