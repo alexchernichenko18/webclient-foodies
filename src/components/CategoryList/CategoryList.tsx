@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../store";
 import { fetchCategories } from "../../store/slices/categoriesSlice";
-import { getCategoryImageSourceSet } from "../../utils/categoryImages";
-import { getTabletCardSize, getDesktopCardSize, getImageSize, type CardSize } from "../../utils/categoryLayout";
+import { getCategoryCardImage } from "../../utils/categoryImages";
+import { getTabletCardSize, getDesktopCardSize, type CardSize } from "../../utils/categoryLayout";
 import CategoryCard from "../CategoryCard";
 import AllCategoriesCard from "../AllCategoriesCard";
 import styles from "./CategoryList.module.scss";
@@ -17,7 +17,6 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
   const { categories, loading, error } = useSelector((state: RootState) => state.categories);
   const [breakpoint, setBreakpoint] = useState<"mobile" | "tablet" | "desktop">("desktop");
 
-  // Визначаємо breakpoint на основі ширини екрану
   useEffect(() => {
     const updateBreakpoint = () => {
       const width = window.innerWidth;
@@ -35,7 +34,6 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
     return () => window.removeEventListener("resize", updateBreakpoint);
   }, []);
 
-  // Завантажуємо категорії при монтуванні, якщо їх ще немає
   React.useEffect(() => {
     if (categories.length === 0 && !loading) {
       dispatch(fetchCategories());
@@ -61,7 +59,6 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
   return (
     <div className={styles.list}>
       {categories.map((category, index) => {
-        // Визначаємо розмір картки залежно від breakpoint
         let cardSize: CardSize = "small";
         if (breakpoint === "tablet") {
           cardSize = getTabletCardSize(index);
@@ -69,12 +66,11 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
           cardSize = getDesktopCardSize(index);
         }
 
-        // Визначаємо розмір зображення для завантаження
-        const imageSize = getImageSize(breakpoint, cardSize);
-        const image = getCategoryImageSourceSet(category.name, breakpoint, imageSize);
+        const image = getCategoryCardImage(category.name);
 
         return <CategoryCard key={category.id} category={category} onArrowClick={() => handleCategoryClick(category.id)} image={image} size={cardSize} />;
       })}
+
       <AllCategoriesCard onClick={handleAllCategoriesClick} />
     </div>
   );
