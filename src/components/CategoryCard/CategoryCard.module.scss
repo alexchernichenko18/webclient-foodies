@@ -1,0 +1,128 @@
+@import "../../styles/variables";
+
+.card {
+  position: relative;
+  width: 100%;
+  border-radius: 30px;
+  background-color: $color-gray;
+  overflow: hidden;
+
+  // Mobile: 343 × 250px
+  aspect-ratio: 343 / 250;
+
+  @media (min-width: 768px) {
+    // Tablet: за замовчуванням маленькі картки 342 × 369px
+    aspect-ratio: 342 / 369;
+  }
+
+  @media (min-width: 1440px) {
+    // Desktop: за замовчуванням маленькі картки 325 × 369px
+    aspect-ratio: 325 / 369;
+  }
+
+  // Великі картки для tablet (704 × 369px)
+  &[data-size="large-tablet"] {
+    @media (min-width: 768px) and (max-width: 1439px) {
+      grid-column: span 2; // Займає 2 колонки
+      aspect-ratio: 704 / 369;
+    }
+  }
+
+  // Великі картки для desktop (590 × 369px)
+  &[data-size="large-desktop"] {
+    @media (min-width: 1440px) {
+      grid-column: span 2;
+      aspect-ratio: 590 / 369;
+    }
+  }
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.overlay {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+}
+
+.name {
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.2;
+  color: $color-white;
+  text-transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+.nameButton {
+  border: none;
+  padding: 10px 12px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 1);
+  cursor: pointer;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.action {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  color: $color-white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: scale(1.03);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: $color-white;
+
+  // На випадок якщо десь глобально перевизначають stroke, фіксуємо колір стрілки тут.
+  path {
+    stroke: currentColor;
+  }
+}
