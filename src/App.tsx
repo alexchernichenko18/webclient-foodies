@@ -4,12 +4,12 @@ import LayoutPublic from "./layouts/LayoutPublic";
 import LayoutPrivate from "./layouts/LayoutPrivate";
 
 import Main from "./pages/Main";
+import Test from "./pages/Test";
 import Category from "./pages/Category";
 import AddRecipe from "./pages/AddRecipe";
 import Recipe from "./pages/Recipe";
 import MyProfile from "./pages/MyProfile";
 import Profile from "./pages/Profile";
-import Test from "./pages/Test";
 import Modals from "./components/Modals/Modals";
 
 function App() {

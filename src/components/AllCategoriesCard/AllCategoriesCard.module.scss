@@ -1,0 +1,57 @@
+@import "../../styles/variables";
+
+.card {
+  position: relative;
+  width: 100%;
+
+  // Mobile: 343 × 250px
+  aspect-ratio: 343 / 250;
+
+  @media (min-width: 768px) {
+    // Tablet: small 342 × 369px
+    aspect-ratio: 342 / 369;
+  }
+
+  @media (min-width: 1440px) {
+    // Desktop: small 325 × 369px
+    aspect-ratio: 325 / 369;
+  }
+
+  border-radius: 30px;
+  border: none;
+  background-color: $color-black;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    background-color: lighten($color-black, 5%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+.text {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+  color: $color-white;
+  text-transform: uppercase;
+
+  @media (min-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: $color-white;
+}
