@@ -1,0 +1,200 @@
+@import '../../styles/variables';
+
+.profileWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.input {
+  display: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 342px;
+  min-width: 300px;
+  border: 1px solid $color-border;
+  border-radius: 30px;
+  padding: 30px 54px;
+  background-color: $color-white;
+  margin: 0;
+
+  @media screen and (min-width: 768px) {
+    gap: 16px;
+    padding: 40px 80px;
+    border-color: $color-dark;
+    width: 394px;
+  }
+
+  @media screen and (min-width: 1440px) {
+    border-color: $color-gray;
+  }
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+.name {
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1.33;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 0;
+  color: $color-dark;
+
+  @media screen and (min-width: 768px) {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+}
+
+.stats {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.textProfile {
+  margin: 0;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+  color: $color-gray;
+
+  @media screen and (min-width: 768px) {
+    font-size: 14px;
+    line-height: 1.43;
+  }
+}
+
+.textValueProfile {
+  font-weight: 700;
+  font-size: 14px;
+  margin-left: 8px;
+  line-height: 1.43;
+  letter-spacing: -0.02em;
+  color: $color-dark;
+
+  @media screen and (min-width: 768px) {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}
+
+.avatarContainer {
+  position: relative;
+  width: 80px;
+  height: 80px;
+
+  @media screen and (min-width: 768px) {
+    width: 120px;
+    height: 120px;
+  }
+
+  .avatarBox {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    @media screen and (min-width: 768px) {
+      width: 120px;
+      height: 120px;
+    }
+  }
+
+  .uploadButton {
+    position: absolute;
+    bottom: -13%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: $color-dark;
+    color: $color-white;
+
+    &:hover {
+      background: $color-black;
+    }
+  }
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.defaultAvatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: $color-gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: larger;
+}
+
+.boxIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  width: 28px;
+  height: 28px;
+
+  @media screen and (min-width: 768px) {
+    width: 38px;
+    height: 38px;
+    > img {
+      width: 18px;
+      height: 18px;
+    }
+  }
+}
+
+.boxIcon > img {
+  filter: brightness(0) invert(1);
+}
+
+.logout {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 30px;
+  border: none;
+  padding: 14px 141px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: $color-white;
+  background: $color-dark;
+  cursor: pointer;
+
+  @media screen and (min-width: 768px) {
+    font-size: 16px;
+    padding: 16px;
+  }
+
+  &:hover {
+    background: $color-black;
+  }
+}
