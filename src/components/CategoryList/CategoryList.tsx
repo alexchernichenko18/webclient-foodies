@@ -56,9 +56,11 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
     return <div className={styles.error}>Error: {error}</div>;
   }
 
+  const visibleCategories = breakpoint === "mobile" ? categories.slice(0, 8) : categories;
+
   return (
     <div className={styles.list}>
-      {categories.map((category, index) => {
+      {visibleCategories.map((category, index) => {
         let cardSize: CardSize = "small";
         if (breakpoint === "tablet") {
           cardSize = getTabletCardSize(index);

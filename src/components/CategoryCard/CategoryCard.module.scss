@@ -3,7 +3,7 @@
 .card {
   position: relative;
   width: 100%;
-  border-radius: 8px;
+  border-radius: 30px;
   background-color: $color-gray;
   overflow: hidden;
 
@@ -58,22 +58,16 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 30px;
-  background: rgba(255, 255, 255, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  gap: 4px;
   max-width: 100%;
 }
 
 .name {
-  font-weight: 600;
-  font-size: 14px;
+  font-weight: 700;
+  font-size: 16px;
   line-height: 1.2;
   color: $color-white;
-  text-transform: uppercase;
+  text-transform: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -83,12 +77,25 @@
   }
 }
 
+.nameButton {
+  border: none;
+  padding: 10px 12px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 1);
+  cursor: pointer;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
 .action {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.6);
   background: rgba(255, 255, 255, 0.1);
+  color: $color-white;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -113,4 +120,9 @@
   height: 18px;
   flex-shrink: 0;
   color: $color-white;
+
+  // На випадок якщо десь глобально перевизначають stroke, фіксуємо колір стрілки тут.
+  path {
+    stroke: currentColor;
+  }
 }

@@ -19,7 +19,9 @@ const CategoryCard = ({ category, onArrowClick, image, size }: CategoryCardProps
 
       <div className={styles.overlay}>
         <div className={styles.badge}>
-          <span className={styles.name}>{category.name}</span>
+          <button type="button" className={styles.nameButton} onClick={onArrowClick} aria-label={`Відкрити рецепти: ${category.name}`}>
+            <span className={styles.name}>{category.name}</span>
+          </button>
           <button type="button" className={styles.action} onClick={onArrowClick} aria-label={`Відкрити рецепти: ${category.name}`}>
             <ArrowIcon className={styles.icon} />
           </button>
