@@ -7,13 +7,13 @@
 
   // Mobile: 1 колонка, 8 карток + ALL CATEGORIES
   grid-template-columns: 1fr;
-  grid-auto-rows: minmax(250px, auto);
+  grid-auto-rows: 250px;
 
-  @media (min-width: 768px) {
+  @media (min-width: 768px) and (max-width: 1439.98px) {
     // Tablet: складна сітка
     gap: 24px;
     grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: minmax(369px, auto);
+    grid-auto-rows: 369px;
   }
 
   @media (min-width: 1440px) {
@@ -21,39 +21,7 @@
     gap: 32px;
     // 4 базові колонки: small = span 1, large = span 2
     grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(369px, auto);
-  }
-}
-
-// Стилі для різних розмірів карток
-.card {
-  // Mobile: 343 × 250px
-  width: 100%;
-  aspect-ratio: 343 / 250;
-
-  @media (min-width: 768px) {
-    // Tablet: за замовчуванням маленькі картки 342 × 369px
-    aspect-ratio: 342 / 369;
-  }
-
-  @media (min-width: 1440px) {
-    // Desktop: за замовчуванням маленькі картки 325 × 369px
-    aspect-ratio: 325 / 369;
-  }
-}
-
-// Класи для великих карток (будуть додані динамічно через data-атрибути)
-.card[data-size="large-tablet"] {
-  @media (min-width: 768px) and (max-width: 1439px) {
-    grid-column: span 2; // Займає 2 колонки
-    aspect-ratio: 704 / 369;
-  }
-}
-
-.card[data-size="large-desktop"] {
-  @media (min-width: 1440px) {
-    grid-column: span 2;
-    aspect-ratio: 590 / 369;
+    grid-auto-rows: 369px;
   }
 }
 

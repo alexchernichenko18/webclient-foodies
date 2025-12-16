@@ -18,20 +18,47 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
   const [breakpoint, setBreakpoint] = useState<"mobile" | "tablet" | "desktop">("desktop");
 
   useEffect(() => {
-    const updateBreakpoint = () => {
-      const width = window.innerWidth;
-      if (width < 768) {
-        setBreakpoint("mobile");
-      } else if (width < 1440) {
-        setBreakpoint("tablet");
-      } else {
-        setBreakpoint("desktop");
-      }
+    type LegacyMediaQueryList = MediaQueryList & {
+      addListener: (listener: () => void) => void;
+      removeListener: (listener: () => void) => void;
     };
 
-    updateBreakpoint();
-    window.addEventListener("resize", updateBreakpoint);
-    return () => window.removeEventListener("resize", updateBreakpoint);
+    // Важливо: matchMedia дає стабільну поведінку на межах брейкпоінтів
+    // і синхронізується з CSS @media (на відміну від window.innerWidth + resize).
+    const mqlMobile = window.matchMedia("(max-width: 767.98px)");
+    const mqlTablet = window.matchMedia("(min-width: 768px) and (max-width: 1439.98px)");
+    const mqlDesktop = window.matchMedia("(min-width: 1440px)");
+
+    const update = () => {
+      if (mqlMobile.matches) setBreakpoint("mobile");
+      else if (mqlTablet.matches) setBreakpoint("tablet");
+      else if (mqlDesktop.matches) setBreakpoint("desktop");
+    };
+
+    // init
+    update();
+
+    // subscribe
+    const subscribe = (mql: MediaQueryList) => {
+      // Safari legacy fallback
+      if (typeof mql.addEventListener === "function") mql.addEventListener("change", update);
+      else (mql as LegacyMediaQueryList).addListener(update);
+
+      return () => {
+        if (typeof mql.removeEventListener === "function") mql.removeEventListener("change", update);
+        else (mql as LegacyMediaQueryList).removeListener(update);
+      };
+    };
+
+    const unsubMobile = subscribe(mqlMobile);
+    const unsubTablet = subscribe(mqlTablet);
+    const unsubDesktop = subscribe(mqlDesktop);
+
+    return () => {
+      unsubMobile();
+      unsubTablet();
+      unsubDesktop();
+    };
   }, []);
 
   React.useEffect(() => {
@@ -56,7 +83,13 @@ const CategoryList = ({ onCategoryClick }: CategoryListProps) => {
     return <div className={styles.error}>Error: {error}</div>;
   }
 
-  const visibleCategories = breakpoint === "mobile" ? categories.slice(0, 8) : categories;
+  const maxByBreakpoint: Record<typeof breakpoint, number> = {
+    mobile: 8,
+    tablet: 11,
+    desktop: 11,
+  };
+
+  const visibleCategories = categories.slice(0, maxByBreakpoint[breakpoint]);
 
   return (
     <div className={styles.list}>

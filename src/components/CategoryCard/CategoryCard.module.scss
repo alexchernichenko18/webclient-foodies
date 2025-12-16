@@ -11,20 +11,22 @@
   aspect-ratio: 343 / 250;
 
   @media (min-width: 768px) {
-    // Tablet: за замовчуванням маленькі картки 342 × 369px
-    aspect-ratio: 342 / 369;
+    // Tablet/Desktop: у макеті висота фіксована 369px
+    height: 369px;
+    aspect-ratio: auto;
   }
 
   @media (min-width: 1440px) {
-    // Desktop: за замовчуванням маленькі картки 325 × 369px
-    aspect-ratio: 325 / 369;
+    height: 369px;
+    aspect-ratio: auto;
   }
 
   // Великі картки для tablet (704 × 369px)
   &[data-size="large-tablet"] {
-    @media (min-width: 768px) and (max-width: 1439px) {
+    @media (min-width: 768px) and (max-width: 1439.98px) {
       grid-column: span 2; // Займає 2 колонки
-      aspect-ratio: 704 / 369;
+      height: 369px;
+      aspect-ratio: auto;
     }
   }
 
@@ -32,7 +34,8 @@
   &[data-size="large-desktop"] {
     @media (min-width: 1440px) {
       grid-column: span 2;
-      aspect-ratio: 590 / 369;
+      height: 369px;
+      aspect-ratio: auto;
     }
   }
 }
