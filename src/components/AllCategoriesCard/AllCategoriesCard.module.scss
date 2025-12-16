@@ -8,13 +8,14 @@
   aspect-ratio: 343 / 250;
 
   @media (min-width: 768px) {
-    // Tablet: small 342 × 369px
-    aspect-ratio: 342 / 369;
+    // Tablet/Desktop: у макеті висота фіксована 369px
+    height: 369px;
+    aspect-ratio: auto;
   }
 
   @media (min-width: 1440px) {
-    // Desktop: small 325 × 369px
-    aspect-ratio: 325 / 369;
+    height: 369px;
+    aspect-ratio: auto;
   }
 
   border-radius: 30px;
