@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import HeroSection from "../../components/HeroSection/HeroSection";
 import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
 
 import styles from "./LayoutPublic.module.scss";
 
@@ -10,6 +11,7 @@ const LayoutPublic = () => {
       <Header variant="dark" />
       <HeroSection />
       <Outlet />
+      <Footer />
     </div>
   );
 };
