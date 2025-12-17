@@ -21,8 +21,6 @@ export default function UserInfo() {
   const dispatch = useDispatch<any>();
 
   const user = useSelector(selectUserInfo) as User | null;
-  console.log(user);
-
   useEffect(() => {
       dispatch(getCurrentUser());
   }, [dispatch]);
@@ -48,7 +46,6 @@ export default function UserInfo() {
             alt="Avatar"
             className={styles.avatar}
         /> : <div className={styles.defaultAvatar}>{user?.name?.charAt(0)}</div>
-    console.log(avatar)
   }
 
   return (

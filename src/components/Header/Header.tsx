@@ -57,6 +57,16 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
     dispatch(openLogOutModal());
   }
 
+  let avatar;
+  if(user) {
+    avatar = user?.avatar ?
+        <img
+            src={process.env.REACT_APP_BASE_URL_API! + user?.avatar}
+            alt="Avatar"
+            className={styles.avatar}
+        /> : <div className={styles.defaultAvatar}>{user?.name?.charAt(0)}</div>
+  }
+
   return (
     <header className={headerClassName}>
       <div className={styles.inner}>
@@ -90,7 +100,7 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
                 className={styles.profile}
                 onClick={() => setIsProfileOpen(prev => !prev)}
               >
-                <div className={styles.avatar}>{user?.name?.charAt(0)}</div>
+                <div className={styles.avatar}>{avatar}</div>
                 <span className={styles.name}>{user?.name}</span>
                 <span className={styles.chevron}>
                   <IconChevronDown />
