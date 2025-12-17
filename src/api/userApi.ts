@@ -12,7 +12,7 @@ export interface User {
 export const userApi = {
   uploadAvatar: (file: File) => {
     const formData = new FormData();
-    formData.append('avatar', file);
+    formData.append('img', file);
 
     return api.patch<{ avatar: string }>('/users/me/avatar', formData, {
       headers: {

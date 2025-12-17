@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {getCurrentUser} from './operations';
+import {getCurrentUser, uploadAvatar} from './operations';
 import {User} from "../../api/authApi";
 import {RootState} from "../index";
 
@@ -26,6 +26,11 @@ const userSlice = createSlice({
             .addCase(getCurrentUser.rejected, (state, action) => {
                 state.error = (action.payload as string) || 'Unknown error';
             })
+            .addCase(uploadAvatar.fulfilled, (state, action) => {
+                    if (state.user) {
+                        state.user.avatar = action.payload;
+                    }
+                });
     },
 });
 
