@@ -167,8 +167,11 @@ const initialValues: AddRecipeFormValues = {
     setIngredientsUI([]);
     setImagePreview(null);
   };
+  
+
 
   return (
+    
     <form onSubmit={formik.handleSubmit} className={styles.form}>
 
       {/* IMAGE */}
@@ -212,6 +215,46 @@ const initialValues: AddRecipeFormValues = {
         options={areas}
         error={formik.touched.areaId ? formik.errors.areaId : undefined}
       />
+
+      {/* COOKING TIME */}
+  <div className={styles.time}>
+  <label className={styles.timeLabel}>Cooking time</label>
+
+  <div className={styles.timeControls}>
+    <button
+      type="button"
+      className={styles.timeBtn}
+      onClick={() =>
+        formik.setFieldValue(
+          "time",
+          Math.max(1, formik.values.time - 1)
+        )
+      }
+      aria-label="Decrease cooking time"
+    >
+      -
+    </button>
+
+    <span className={styles.timeValue}>
+      {formik.values.time} min
+    </span>
+
+    <button
+      type="button"
+      className={styles.timeBtn}
+      onClick={() =>
+        formik.setFieldValue("time", formik.values.time + 1)
+      }
+      aria-label="Increase cooking time"
+    >
+      +
+    </button>
+  </div>
+
+  {formik.touched.time && formik.errors.time && (
+    <div className={styles.error}>{formik.errors.time}</div>
+  )}
+</div>
 
       {/* INGREDIENTS */}
       <div className={styles.ingredients}>
@@ -269,5 +312,6 @@ const initialValues: AddRecipeFormValues = {
     </form>
   );
 };
+<div>Hello World</div>;
 
 export default AddRecipeForm;

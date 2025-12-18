@@ -1,0 +1,36 @@
+.time {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeLabel {
+  font-weight: 500;
+}
+
+.timeControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.timeBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
+}
+
+.timeValue {
+  min-width: 80px;
+  text-align: center;
+  font-weight: 500;
+}
+
