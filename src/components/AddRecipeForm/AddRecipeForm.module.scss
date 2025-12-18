@@ -1,11 +1,59 @@
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+.image {
+  grid-column: 1 / 2;
+  width: 100%;
+  height: 420px;
+
+  border-radius: 20px;
+  background-color: #f3f3f3;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    inset: 0;
+    cursor: pointer;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid #d9d9d9;
+  font-size: 16px;
+  outline: none;
+
+  &:focus {
+    border-color: #1a1a1a;
+  }
+}
+
 .time {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.timeLabel {
-  font-weight: 500;
+  gap: 12px;
 }
 
 .timeControls {
@@ -15,22 +63,40 @@
 }
 
 .timeBtn {
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 1px solid #ccc;
+  border: 1px solid #1a1a1a;
   background: transparent;
   font-size: 20px;
   cursor: pointer;
-
-  &:hover {
-    background-color: #f2f2f2;
-  }
 }
 
 .timeValue {
-  min-width: 80px;
-  text-align: center;
+  font-size: 18px;
   font-weight: 500;
 }
 
+.ingredients {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ingredient {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f7f7f7;
+}
+
+.actions {
+  grid-column: 1 / -1;
+
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
