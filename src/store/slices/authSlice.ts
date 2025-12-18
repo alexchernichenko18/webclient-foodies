@@ -7,6 +7,7 @@ import {
   type LoginPayload,
   type RegisterPayload,
 } from "../../api/authApi";
+import {getCurrentUser, uploadAvatar} from "../user/operations";
 
 export interface AuthState {
   user: AuthResponse["user"] | null;
@@ -106,6 +107,16 @@ const authSlice = createSlice({
       .addCase(loginThunk.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Login failed";
+      })
+      .addCase(getCurrentUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        localStorage.setItem(USER_KEY, JSON.stringify(action.payload));
+      })
+      .addCase(uploadAvatar.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.avatar = action.payload;
+          localStorage.setItem(USER_KEY, JSON.stringify(state.user));
+        }
       })
       .addCase(logoutThunk.fulfilled, state => {
         state.user = null;
