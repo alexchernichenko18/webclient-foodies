@@ -1,59 +1,96 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import Categories from "../../components/Categories";
-import MainTitle from "../../components/ui/MainTitle";
+import Recipes from "../../components/Recipes";
 import { RootState } from "../../store";
+import { getRecipes, type Recipe } from "../../api/recipes";
 import styles from "./Main.module.scss";
 
 const Main = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);
   const [showRecipes, setShowRecipes] = useState(false);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    ingredientId: "",
+    areaId: "",
+  });
   const { categories } = useSelector((state: RootState) => state.categories);
 
-  const handleCategoryClick = async (categoryId: string | null) => {
+  const loadRecipes = async (categoryId: string | null, ingredientId?: string, areaId?: string) => {
     try {
-      // Визначаємо назву категорії для відображення
-      let categoryName: string | null = null;
-      if (categoryId) {
-        const category = categories.find((cat) => cat.id === categoryId);
-        categoryName = category?.name || null;
-      } else {
-        categoryName = "All categories";
-      }
+      setLoading(true);
+      
+      const response = await getRecipes({
+        categoryId: categoryId,
+        ingredientName: ingredientId || undefined,
+        areaId: areaId || undefined,
+        page: 1,
+        limit: 10,
+      });
 
-      setSelectedCategoryId(categoryId);
-      setSelectedCategoryName(categoryName);
-      setShowRecipes(true);
-
-      // TODO: Коли буде готовий компонент Recipes, додати:
-      // - Запит на backend за рецептами (без фільтру по категорії якщо categoryId === null)
-      // - Обробку помилок з notification
-      // - Відображення компонента Recipes замість Categories
-      console.log("Category selected:", categoryId, categoryName);
+      setRecipes(response.recipes);
+      console.log("Recipes loaded:", response);
     } catch (error) {
-      // TODO: Показати notification з помилкою
       alert("Failed to load recipes. Please try again.");
       console.error("Error loading recipes:", error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleCategoryClick = async (categoryId: string | null) => {
+    // Визначаємо назву категорії для відображення
+    let categoryName: string | null = null;
+    if (categoryId) {
+      const category = categories.find((cat) => cat.id === categoryId);
+      categoryName = category?.name || null;
+    } else {
+      categoryName = "All categories";
+    }
+
+    setSelectedCategoryId(categoryId);
+    setSelectedCategoryName(categoryName);
+    setShowRecipes(true);
+    setFilters({ ingredientId: "", areaId: "" }); // Скидаємо фільтри
+
+    await loadRecipes(categoryId);
+  };
+
+  const handleFilterChange = (selectedId: string, filterType: "ingredients" | "areas") => {
+    console.log(`Filter changed - Type: ${filterType}, ID: ${selectedId}`);
+    
+    const newFilters = {
+      ...filters,
+      [filterType === "ingredients" ? "ingredientId" : "areaId"]: selectedId,
+    };
+    
+    setFilters(newFilters);
+    
+    // Перезавантажуємо рецепти з новими фільтрами
+    loadRecipes(selectedCategoryId, newFilters.ingredientId, newFilters.areaId);
   };
 
   const handleBackClick = () => {
     setShowRecipes(false);
     setSelectedCategoryId(null);
     setSelectedCategoryName(null);
+    setRecipes([]);
+    setFilters({ ingredientId: "", areaId: "" });
   };
 
   return (
     <div className={styles.wrap}>
       {!showRecipes && <Categories onCategoryClick={handleCategoryClick} />}
       {showRecipes && (
-        <div>
-          {/* TODO: Додати компонент Recipes коли він буде готовий */}
-          <MainTitle>{selectedCategoryName || "All categories"}</MainTitle>
-          <button onClick={handleBackClick}>Back to Categories</button>
-          <p>Recipes will be displayed here (categoryId: {selectedCategoryId || "null - all categories"})</p>
-        </div>
+        <Recipes
+          recipes={recipes}
+          loading={loading}
+          onBack={handleBackClick}
+          categoryName={selectedCategoryName}
+          onFilterChange={handleFilterChange}
+        />
       )}
     </div>
   );
