@@ -1,13 +1,14 @@
 import * as Yup from "yup";
 
 export const addRecipeValidationSchema = Yup.object({
-  img: Yup.mixed().nullable(),
+  img: Yup.mixed<File>().nullable(),
 
   name: Yup.string()
     .trim()
     .required("Recipe name is required"),
 
   description: Yup.string()
+    .trim()
     .max(200, "Max 200 characters")
     .required("Description is required"),
 
@@ -15,18 +16,19 @@ export const addRecipeValidationSchema = Yup.object({
     .required("Category is required"),
 
   areaId: Yup.string()
-    .required("Country is required"),
+    .required("Area is required"),
 
   time: Yup.number()
+    .typeError("Cooking time is required")
     .min(1, "Minimum 1 minute")
-    .required("Cooking time is required"),
+    .required(),
 
   ingredients: Yup.array()
     .of(Yup.string())
-    .min(1, "Add at least one ingredient")
-    .required(),
+    .min(1, "Add at least one ingredient"),
 
   instructions: Yup.string()
+    .trim()
     .max(1000, "Max 1000 characters")
     .required("Instructions are required"),
 });

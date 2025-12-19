@@ -226,6 +226,18 @@
   width: fit-content;
 }
 
+.nameInput {
+  > div {
+    padding: 0;
+    border: none;
+  }
+
+  input {
+    font-size: 24px;
+    font-weight: 800;
+  }
+}
+
 .ingredientsList {
   display: flex;
   flex-wrap: wrap;

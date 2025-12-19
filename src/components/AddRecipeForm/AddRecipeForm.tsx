@@ -18,6 +18,8 @@ import api from "../../api/client";
 import { useEffect } from "react";
 import type { SelectOption } from "../../components/AddRecipeForm/types";
 import classNames from "classnames";
+import { createRecipe } from "../../api/recipes";
+import Input from "../ui/Input";
 
 
 const initialValues: AddRecipeFormValues = {
@@ -47,25 +49,18 @@ const AddRecipeForm = () => {
     validationSchema: addRecipeValidationSchema,
     onSubmit: async values => {
       try {
-        const formData = new FormData();
+        const created = await createRecipe({
+          name: values.name,
+          description: values.description,
+          instructions: values.instructions,
+          time: values.time,
+          categoryId: values.categoryId,
+          areaId: values.areaId,
+          ingredients: values.ingredients,
+          img: values.img,
+        });
 
-        formData.append("name", values.name);
-        formData.append("description", values.description);
-        formData.append("instructions", values.instructions);
-        formData.append("time", String(values.time));
-        formData.append("categoryId", values.categoryId);
-        formData.append("areaId", values.areaId);
-
-        if (values.img) {
-          formData.append("img", values.img);
-        }
-
-        values.ingredients.forEach(id =>
-          formData.append("ingredients", id)
-        );
-
-        const res = await api.post("/recipes", formData);
-        navigate(`/recipe/${res.data.id}`);
+        navigate(`/recipe/${created.id}`);
       } catch {
         iziToast.error({
           title: "Error",
@@ -226,8 +221,15 @@ const AddRecipeForm = () => {
       <div className={styles.right}>
         <h1 className={styles.title}>ADD RECIPE</h1>
 
+        <Input
+          name="name"
+          value={formik.values.name}
+          onChange={formik.handleChange}
+          placeholder="Enter recipe name"
+          className={styles.nameInput}
+        />
+
         <div className={styles.field}>
-          <p className={styles.label}>THE NAME OF THE RECIPE</p>
 
           <TextArea
             name="description"

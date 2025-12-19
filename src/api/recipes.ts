@@ -67,3 +67,38 @@ export async function removeRecipeFromFavorites(
   );
   return data.isFavorite;
 }
+
+export type CreateRecipePayload = {
+  name: string;
+  description: string;
+  instructions: string;
+  time: number;
+  categoryId: string;
+  areaId: string;
+  ingredients: string[];
+  img: File | null;
+};
+
+export type CreatedRecipe = {
+  id: string;
+};
+
+export async function createRecipe(payload: CreateRecipePayload): Promise<CreatedRecipe> {
+  const formData = new FormData();
+
+  formData.append("name", payload.name);
+  formData.append("description", payload.description);
+  formData.append("instructions", payload.instructions);
+  formData.append("time", String(payload.time));
+  formData.append("categoryId", payload.categoryId);
+  formData.append("areaId", payload.areaId);
+
+  payload.ingredients.forEach((ing) => formData.append("ingredients", ing));
+
+  if (payload.img) {
+    formData.append("img", payload.img);
+  }
+
+  const { data } = await api.post<CreatedRecipe>("/recipes", formData);
+  return data;
+}
