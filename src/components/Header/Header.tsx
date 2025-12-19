@@ -57,14 +57,20 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
     dispatch(openLogOutModal());
   }
 
+  const onAddRecipeClickHandler = () => {
+    if (!isAuthenticated) {
+      dispatch(openSignInModal());
+    }
+  }
+
   let avatar;
-  if(user) {
+  if (user) {
     avatar = user?.avatar ?
-        <img
-            src={process.env.REACT_APP_BASE_URL_API! + user?.avatar}
-            alt="Avatar"
-            className={styles.avatar}
-        /> : <div className={styles.defaultAvatar}>{user?.name?.charAt(0)}</div>
+      <img
+        src={process.env.REACT_APP_BASE_URL_API! + user?.avatar}
+        alt="Avatar"
+        className={styles.avatar}
+      /> : <div className={styles.defaultAvatar}>{user?.name?.charAt(0)}</div>
   }
 
   return (
@@ -78,7 +84,7 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
           <Button href="/" variant={isDark ? "outlined-dark" : "light"} size="small">
             HOME
           </Button>
-          <Button href="/add-recipe" variant={isDark ? "dark" : "outlined-light"} size="small">
+          <Button onClick={onAddRecipeClickHandler} href={isAuthenticated ? "/add-recipe" : undefined} variant={isDark ? "dark" : "outlined-light"} size="small">
             ADD RECIPE
           </Button>
         </nav>

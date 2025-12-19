@@ -15,7 +15,7 @@
 
 .subtitle {
     font-size: 14px;
-    color: $color-gray;
+    color: $color-dark;
     margin-bottom: 12px;
 }
 
@@ -37,16 +37,16 @@
     left: 0;
     font-size: 200px;
     line-height: 1;
-    color: $color-border;
+    color: $color-gray;
     opacity: 0.6;
     pointer-events: none;
 }
 
 .text {
+    max-width: 820px;
     font-size: 18px;
     line-height: 1.6;
-    margin-bottom: 40px;
-    margin-top: 16px;
+    margin: 16px auto 40px auto;
 }
 
 .author {

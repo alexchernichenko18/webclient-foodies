@@ -23,6 +23,10 @@
   margin: 0 auto;
   padding-top: 200px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  align-items: center;
 }
 
 .title {

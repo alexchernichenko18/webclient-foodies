@@ -45,7 +45,9 @@
     color: $color-black;
     text-decoration: none;
 
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease;
 
     svg {
         width: 16px;
@@ -60,7 +62,6 @@
 }
 
 .divider {
-    max-width: 1280px;
     margin: 24px auto 12px;
     height: 1px;
     background-color: $color-border;
@@ -69,11 +70,10 @@
 .copy {
     text-align: center;
     font-size: 12px;
-    color: $color-gray;
+    color: $color-dark;
 }
 
 @media (max-width: 1279px) {
-
     .topRow,
     .divider {
         padding: 0 32px;
@@ -81,7 +81,6 @@
 }
 
 @media (max-width: 767px) {
-
     .topRow,
     .divider {
         padding: 0 16px;

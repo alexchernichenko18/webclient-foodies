@@ -1,62 +1,185 @@
+@import "../../styles/variables.scss";
 
 .form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 40px;
-
-  max-width: 1200px;
   margin: 0 auto;
+  padding: 32px 0;
+
+  display: grid;
+  grid-template-columns: 560px 1fr;
+  gap: 56px;
+  align-items: start;
 }
 
-
-.image {
-  grid-column: 1 / 2;
+.left {
   width: 100%;
-  height: 420px;
-
-  border-radius: 20px;
-  background-color: #f3f3f3;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-
-  input {
-    position: absolute;
-    opacity: 0;
-    inset: 0;
-    cursor: pointer;
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 16px 18px;
-  border-radius: 14px;
-  border: 1px solid #d9d9d9;
-  font-size: 16px;
-  outline: none;
-
-  &:focus {
-    border-color: #1a1a1a;
-  }
 }
 
-.time {
+.title {
+  margin: 0 0 18px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  color: #111;
+}
+
+.imageSection {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.timeControls {
+.imageDropzone {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  border-radius: 26px;
+  background: #fff;
+  border: 2px dashed #cfcfcf;
+  overflow: hidden;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border-color: #b8b8b8;
+  }
+}
+
+.fileInput {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.imagePlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  user-select: none;
+}
+
+.cameraIconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  border: 1px solid #d9d9d9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8f8f8f;
+}
+
+.uploadCta {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.imagePreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.uploadAnother {
+  align-self: center;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #111;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+@media (max-width: 1100px) {
+  .imageDropzone {
+    height: 360px;
+    border-radius: 22px;
+  }
+}
+
+.upload {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 12px;
+  color: #111;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.name {
+  margin-bottom: 18px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.title {
+  margin: 0 0 10px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+}
+
+.w50 {
+  width: calc(50% - 10px);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 60px;
+}
+
+.label {
+  margin: 0;
+  font-size: 20px;
+  margin-bottom: 16px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  color: $color-dark;
+  text-transform: uppercase;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid #d9d9d9;
+  font-size: 16px;
+  outline: none;
+}
+
+.selectPill {
+  width: 100%;
+}
+
+.timePill {
+  height: 56px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -66,37 +189,91 @@ select {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  border: 1px solid #1a1a1a;
+  border: 1px solid #111;
   background: transparent;
   font-size: 20px;
   cursor: pointer;
 }
 
 .timeValue {
-  font-size: 18px;
-  font-weight: 500;
+  font-size: 14px;
+  color: #111;
 }
 
-.ingredients {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.ingredient {
-  display: flex;
+.ingredientsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
   align-items: center;
-  justify-content: space-between;
+}
 
-  padding: 12px 16px;
-  border-radius: 12px;
+.inputLine {
+  width: 100%;
+  padding: 16px 0px;
+  border: none;
+  border-bottom: 1px solid #d9d9d9;
+  border-radius: 0;
+  outline: none;
+  font-size: 16px;
+}
+
+.textareaLine {
+  width: 100%;
+}
+
+.addIngredientBtn {
+  margin-top: 40px;
+  width: fit-content;
+}
+
+.ingredientsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ingredientChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
   background: #f7f7f7;
 }
 
-.actions {
-  grid-column: 1 / -1;
+.ingredientName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111;
+}
 
+.ingredientQty {
+  font-size: 12px;
+  color: #666;
+}
+
+.removeChip {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.actions {
+  margin-top: 16px;
+  padding-top: 18px;
   display: flex;
-  justify-content: flex-end;
   gap: 16px;
+}
+
+.trashBtn {
+  width: 56px;
+  height: 56px;
+  justify-content: center;
+}
+
+.publishBtn {
+  width: 140px;
 }
