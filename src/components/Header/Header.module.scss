@@ -168,6 +168,25 @@
   }
 }
 
+.burger {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  @media (max-width: 767px) {
+    display: block;
+  }
+}
+
+.burgerWhite {
+  color: #ffffff;
+}
+
+.burgerBlack {
+  color: #000000;
+}
+
 @media (max-width: 1279px) {
   .inner {
     padding: 0 32px;
