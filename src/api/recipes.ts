@@ -39,6 +39,40 @@ export type RecipeDetails = {
   isFavorite: boolean;
 };
 
+export type Recipe = {
+  id: string;
+  name: string;
+  description: string;
+  instructions: string;
+  time: number;
+  img: string | null;
+  category?: {
+    id: string;
+    name: string;
+  };
+  area?: {
+    id: string;
+    name: string;
+  };
+  ingredients?: RecipeIngredientDTO[];
+};
+
+export type RecipeFilters = {
+  categoryId?: string | null;
+  areaId?: string | null;
+  ingredientName?: string | null;
+  ownerId?: string | null;
+  page?: number;
+  limit?: number;
+};
+
+export type RecipesResponse = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  recipes: Recipe[];
+};
 
 export async function getPopularRecipes(limit = 4): Promise<PopularRecipe[]> {
   const { data } = await api.get<{ items: PopularRecipe[] }>("/recipes/popular", {
@@ -49,6 +83,22 @@ export async function getPopularRecipes(limit = 4): Promise<PopularRecipe[]> {
 
 export async function getRecipeById(recipeId: string): Promise<RecipeDetails> {
   const { data } = await api.get<RecipeDetails>(`/recipes/${recipeId}`);
+  return data;
+}
+
+export async function getRecipes(
+  filters: RecipeFilters = {}
+): Promise<RecipesResponse> {
+  const { data } = await api.get<RecipesResponse>("/recipes", {
+    params: {
+      categoryId: filters.categoryId || undefined,
+      areaId: filters.areaId || undefined,
+      ingredientName: filters.ingredientName || undefined,
+      ownerId: filters.ownerId || undefined,
+      page: filters.page || 1,
+      limit: filters.limit || 10,
+    },
+  });
   return data;
 }
 

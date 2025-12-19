@@ -1,0 +1,186 @@
+.card {
+  list-style: none;
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .card {
+    max-width: 342px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .card {
+    max-width: 290px;
+  }
+}
+
+.image {
+  margin: 0 0 16px;
+  height: 275px;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: -0.24px;
+  text-transform: uppercase;
+  color: #3E4462;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.24px;
+  font-weight: 400;
+  color: #23262A;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 0.5;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfo {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.avatarContainer {
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: #f0f0f0;
+}
+
+.avatar {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.name {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: -0.24px;
+  font-weight: 600;
+  color: #3E4462;
+  opacity: 0.6;
+  overflow: hidden;
+  max-width: 150px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.buttons {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 1.5px solid #8BAA36;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 0;
+  text-decoration: none;
+
+  &:hover {
+    background-color: #8BAA36;
+    
+    .icon {
+      stroke: white;
+    }
+  }
+
+  &.btnFavoriteActive {
+    background-color: #8BAA36;
+    
+    .icon {
+      fill: white;
+      stroke: white;
+    }
+  }
+}
+
+.icon {
+  height: 16px;
+  width: 16px;
+  stroke: #8BAA36;
+  fill: none;
+  transition: all 0.3s;
+}
+
+// Tablet styles
+@media (min-width: 768px) {
+  .image {
+    height: 275px;
+  }
+
+  .title {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .text {
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0 0 16px;
+  }
+
+  .avatarContainer {
+    height: 34px;
+    width: 34px;
+  }
+
+  .name {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .btn {
+    height: 42px;
+    width: 42px;
+  }
+
+  .icon {
+    height: 18px;
+    width: 18px;
+  }
+}
+
+// Desktop styles
+@media screen and (min-width: 1440px) {
+  .card {
+    // Додаткові стилі якщо потрібно
+  }
+}
