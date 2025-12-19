@@ -4,7 +4,8 @@ import AddRecipeForm from '../../components/AddRecipeForm';
 const AddRecipe = () => {
   return (
     <div className={styles.wrap}>
-      <h1>Add Recipe</h1>
+      <h1 className={styles.title}>Add Recipe</h1>
+      <h2 className={styles.subtitle}>Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us.</h2>
       <AddRecipeForm />
     </div>
   );

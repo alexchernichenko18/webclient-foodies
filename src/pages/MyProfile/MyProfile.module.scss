@@ -1,3 +1,5 @@
+@import "../../styles/variables.scss";
+
 .breadcrumb {
   margin-bottom: 32px;
   font-size: 14px;
@@ -25,8 +27,7 @@
 }
 
 h1 {
-  padding-bottom: 16px;
-  font-family: 'Mulish', Arial, sans-serif;
+  font-family: "Mulish", Arial, sans-serif;
   font-weight: 800;
   font-size: 28px;
   line-height: 1.14286;
@@ -41,7 +42,7 @@ h1 {
   font-weight: 500;
   font-size: 14px;
   line-height: 1.5;
-  color: #1a1a1a;
+  color: $color-gray;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;

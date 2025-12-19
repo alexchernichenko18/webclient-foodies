@@ -1,25 +1,23 @@
-import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import styles from './Profile.module.scss'; 
+import { useState } from 'react';
+import styles from './Profile.module.scss';
 import userInfoStyles from '../../components/UserInfo/UserInfo.module.scss';
 import Button from '../../components/ui/Button/Button';
-import { User, userApi } from '../../api/userApi';
+import { User } from '../../api/userApi';
 
 const Profile = () => {
-  const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<'recipes' | 'followers'>('recipes');
 
   // --- FOR TESTING (Mock data) ---
-  const [user, setUser] = useState<Partial<User> | null>({
+  const [user] = useState<Partial<User> | null>({
     name: "Nadia",
     email: "nadia28682@gmai.com",
-    avatar: "", 
+    avatar: "",
     recipesAmount: 4,
     followersAmount: 5
   });
 
   // Mock list of followers for testing
-  const [followers, setFollowers] = useState([
+  const [followers] = useState([
     { id: '1', name: 'Oleg Test', email: 'oleg@gmail.com' },
     { id: '2', name: 'Anna Cook', email: 'anna@gmail.com' },
     { id: '3', name: 'John Foodie', email: 'john@gmail.com' },
@@ -88,7 +86,7 @@ const Profile = () => {
               </li>
             </ul>
           </div>
-          
+
           <Button variant="dark" expanded onClick={() => console.log('Followed!')}>
             FOLLOW
           </Button>
@@ -97,18 +95,18 @@ const Profile = () => {
         <main className={styles.main}>
           {/* Tabs Navigation */}
           <div style={{ display: 'flex', gap: '20px', marginBottom: '24px', borderBottom: '1px solid #e0e0e0' }}>
-            <button 
+            <button
               onClick={() => setActiveTab('recipes')}
-              style={{ 
+              style={{
                 padding: '10px 0', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700,
                 borderBottom: activeTab === 'recipes' ? '2px solid black' : 'none'
               }}
             >
               RECIPES
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('followers')}
-              style={{ 
+              style={{
                 padding: '10px 0', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700,
                 borderBottom: activeTab === 'followers' ? '2px solid black' : 'none'
               }}
@@ -126,13 +124,13 @@ const Profile = () => {
             ) : (
               <div className={styles.followersList} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {followers.map(follower => (
-                  <div key={follower.id} style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '12px', 
-                    padding: '12px', 
-                    border: '1px solid #eee', 
-                    borderRadius: '15px' 
+                  <div key={follower.id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px',
+                    border: '1px solid #eee',
+                    borderRadius: '15px'
                   }}>
                     <div className={userInfoStyles.defaultAvatar} style={{ width: '40px', height: '40px', fontSize: '14px' }}>
                       {follower.name.charAt(0)}

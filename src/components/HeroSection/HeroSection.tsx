@@ -1,6 +1,19 @@
+import { useDispatch, useSelector } from "react-redux";
+import Button from "../ui/Button";
 import styles from "./HeroSection.module.scss";
+import { RootState } from "../../store";
+import { openSignInModal } from "../../store/slices/modalSlice";
 
 const HeroSection = () => {
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
+  const onAddRecipeClickHandler = () => {
+    if (!isAuthenticated) {
+      dispatch(openSignInModal());
+    }
+  }
+
   return (
     <section className={styles.wrap}>
       <div className={styles.inner}>
@@ -17,7 +30,9 @@ const HeroSection = () => {
             you in the aromas and tastes of various cuisines.
           </p>
 
-          <button className={styles.button}>ADD RECIPE</button>
+          <Button onClick={onAddRecipeClickHandler} href={isAuthenticated ? "/add-recipe" : undefined} variant="outlined-dark" size="large">
+            ADD RECIPE
+          </Button>
         </div>
 
         {/* images */}
