@@ -5,6 +5,7 @@ import MainTitle from "../../components/ui/MainTitle";
 import { RootState } from "../../store";
 import styles from "./Main.module.scss";
 
+
 const Main = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);

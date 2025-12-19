@@ -6,7 +6,7 @@ import { RootState } from "../../store";
 import styles from "./LayoutPrivate.module.scss";
 
 const LayoutPrivate = () => {
-  const isAuth = useSelector((state: RootState) => state.auth.isAuthenticated);
+ const isAuth = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   if (!isAuth) {
     return <Navigate to="/" replace />;
