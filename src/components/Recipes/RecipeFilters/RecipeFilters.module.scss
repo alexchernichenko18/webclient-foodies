@@ -7,6 +7,14 @@
 
 @media screen and (min-width: 768px) {
   .filtersWrapper {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .filtersWrapper {
+    flex-direction: column;
     gap: 18px;
   }
 }
@@ -14,6 +22,18 @@
 .filterGroup {
   width: 100%;
   position: relative;
+}
+
+@media screen and (min-width: 768px) {
+  .filterGroup {
+    flex: 1;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .filterGroup {
+    flex: none;
+  }
 }
 
 .filterSelect {
