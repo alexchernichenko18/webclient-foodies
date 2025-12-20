@@ -52,7 +52,7 @@ const Footer = () => {
 
       <div className={styles.divider} />
 
-      <p className={styles.copy}>©2024, Foodies. All rights reserved</p>
+      <p className={styles.copy}>©{new Date().getFullYear()}, Foodies. All rights reserved</p>
     </footer>
   );
 };

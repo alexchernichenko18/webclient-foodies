@@ -14,6 +14,9 @@ import {
   type RecipeDetails,
 } from "../../api/recipes";
 
+import DEFAULT_RECIPE_IMAGE_SRC from "../../assets/recipes/no-image.png";
+import Avatar from "../../components/Avatar";
+
 const Recipe = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -90,8 +93,9 @@ const Recipe = () => {
         : await addRecipeToFavorites(recipe.id);
 
       setRecipe((prev) => (prev ? { ...prev, isFavorite: nextIsFavorite } : prev));
-    } catch (e: any) {
-      alert(e?.message ?? "Failed to update favorites");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Failed to update favorites";
+      alert(message);
     } finally {
       setFavPending(false);
     }
@@ -113,8 +117,9 @@ const Recipe = () => {
       setPopular((prev) =>
         prev.map((p) => (p.id === item.id ? { ...p, isFavorite: nextIsFavorite } : p)),
       );
-    } catch (e: any) {
-      alert(e?.message ?? "Failed to update favorites");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Failed to update favorites";
+      alert(message);
     }
   }
 
@@ -142,14 +147,24 @@ const Recipe = () => {
           <section className={styles.topSection}>
             <div className={styles.topGrid}>
               <div className={styles.imageWrap}>
-                <img className={styles.image} src={recipe.imageUrl} alt={recipe.title} />
+                <img
+                  className={styles.image}
+                  src={recipe.imageUrl || DEFAULT_RECIPE_IMAGE_SRC}
+                  alt={recipe.title}
+                  onError={(e) => {
+                    const img = e.currentTarget;
+                    if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
+                  }}
+                />
               </div>
 
               <div className={styles.content}>
                 <h1 className={styles.title}>{recipe.title}</h1>
 
                 <div className={styles.pills}>
-                  {recipe.category?.name && <span className={styles.pill}>{recipe.category.name}</span>}
+                  {recipe.category?.name && (
+                    <span className={styles.pill}>{recipe.category.name}</span>
+                  )}
                   {!!recipe.time && <span className={styles.pill}>{recipe.time} min</span>}
                 </div>
 
@@ -158,11 +173,7 @@ const Recipe = () => {
                 {recipe.author && (
                   <div className={styles.authorRow}>
                     <div className={styles.authorAvatar}>
-                      {recipe.author.avatarUrl ? (
-                        <img src={recipe.author.avatarUrl} alt={recipe.author.name} />
-                      ) : (
-                        <span>{recipe.author.name?.[0]?.toUpperCase() ?? "U"}</span>
-                      )}
+                      <Avatar src={recipe.author.avatarUrl ?? undefined} alt={recipe.author.name} />
                     </div>
 
                     <div className={styles.authorInfo}>
@@ -178,7 +189,14 @@ const Recipe = () => {
                   {recipe.ingredients.map((ing) => (
                     <li key={ing.id} className={styles.ingredientItem}>
                       <div className={styles.ingredientIcon}>
-                        <img src={ing.imageUrl} alt={ing.name} />
+                        <img
+                          src={ing.imageUrl || DEFAULT_RECIPE_IMAGE_SRC}
+                          alt={ing.name}
+                          onError={(e) => {
+                            const img = e.currentTarget;
+                            if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
+                          }}
+                        />
                       </div>
 
                       <div className={styles.ingredientMeta}>
@@ -211,7 +229,9 @@ const Recipe = () => {
           <h2 className={styles.popularTitle}>Popular Recipes</h2>
 
           {loadingPopular && <p className={styles.stateText}>Loading popular recipes...</p>}
-          {!loadingPopular && popular.length === 0 && <p className={styles.stateText}>No popular recipes yet.</p>}
+          {!loadingPopular && popular.length === 0 && (
+            <p className={styles.stateText}>No popular recipes yet.</p>
+          )}
 
           {!loadingPopular && popular.length > 0 && (
             <ul className={styles.popularGrid}>
@@ -227,7 +247,14 @@ const Recipe = () => {
                   }}
                 >
                   <div className={styles.popularImageWrap}>
-                    <img src={item.imageUrl} alt={item.title} />
+                    <img
+                      src={item.imageUrl || DEFAULT_RECIPE_IMAGE_SRC}
+                      alt={item.title}
+                      onError={(e) => {
+                        const img = e.currentTarget;
+                        if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
+                      }}
+                    />
                   </div>
 
                   <div className={styles.popularText}>
@@ -239,7 +266,14 @@ const Recipe = () => {
                     <div className={styles.popularAuthor}>
                       <div className={styles.popularAvatar}>
                         {item.author?.avatarUrl ? (
-                          <img src={item.author.avatarUrl} alt={item.author.name} />
+                          <img
+                            src={item.author.avatarUrl}
+                            alt={item.author.name}
+                            onError={(e) => {
+                              const img = e.currentTarget;
+                              if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
+                            }}
+                          />
                         ) : (
                           <span>{item.author?.name?.[0]?.toUpperCase() ?? "U"}</span>
                         )}
@@ -251,7 +285,8 @@ const Recipe = () => {
                       <button
                         type="button"
                         aria-label={item.isFavorite ? "Remove from favorites" : "Add to favorites"}
-                        className={`${styles.popularIconBtn} ${item.isFavorite ? styles.popularIconBtnActive : ""}`}
+                        className={`${styles.popularIconBtn} ${item.isFavorite ? styles.popularIconBtnActive : ""
+                          }`}
                         onClick={(e) => togglePopularFavorite(e, item)}
                       >
                         <img className={styles.icon} src={heartIcon} alt="" width={18} height={18} />

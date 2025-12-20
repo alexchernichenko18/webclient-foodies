@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import styles from "./MobileMenu.module.scss";
 import { ReactComponent as CloseIcon } from "../../assets/icons/icon-close.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { openSignInModal } from "../../store/slices/modalSlice";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -8,6 +11,15 @@ interface MobileMenuProps {
 }
 
 const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
+  const onAddRecipeClickHandler = () => {
+    if (!isAuthenticated) {
+      dispatch(openSignInModal());
+    }
+  }
+
   if (!isOpen) return null;
 
   return (
@@ -31,7 +43,10 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
           <Link to="/" onClick={onClose} className={styles.homeButton}>
             HOME
           </Link>
-          <Link to="/add" onClick={onClose} className={styles.addLink}>
+          <Link to="/add-recipe" onClick={() => {
+            onAddRecipeClickHandler();
+            onClose();
+          }} className={styles.addLink}>
             ADD RECIPE
           </Link>
         </div>
