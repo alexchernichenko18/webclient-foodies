@@ -5,6 +5,7 @@ import styles from "./TextArea.module.scss";
 interface TextAreaProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLTextAreaElement>) => void;
   name?: string;
   placeholder?: string;
   error?: boolean;
@@ -16,6 +17,7 @@ interface TextAreaProps {
 const TextArea = ({
   value,
   onChange,
+  onBlur,
   name,
   placeholder,
   error,
@@ -47,6 +49,7 @@ const TextArea = ({
           className={styles.textarea}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
           name={name}
           maxLength={maxLength}
           placeholder={placeholder}

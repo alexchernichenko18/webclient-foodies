@@ -1,26 +1,24 @@
-import { useState, ChangeEvent } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 
 import Select from "../ui/Select";
 import TextArea from "../ui/TextArea";
 import Button from "../ui/Button";
+import Input from "../ui/Input";
+
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
-
 import { addRecipeValidationSchema } from "./validation";
-import { AddRecipeFormValues, IngredientUI } from "./types";
+import { type AddRecipeFormValues, type IngredientUI } from "./types";
 import { ReactComponent as IconTrash } from "../../assets/icons/icon-trash.svg";
 
 import styles from "./AddRecipeForm.module.scss";
 import api from "../../api/client";
-import { useEffect } from "react";
 import type { SelectOption } from "../../components/AddRecipeForm/types";
 import classNames from "classnames";
 import { createRecipe } from "../../api/recipes";
-import Input from "../ui/Input";
-
 
 const initialValues: AddRecipeFormValues = {
   name: "",
@@ -31,7 +29,7 @@ const initialValues: AddRecipeFormValues = {
   instructions: "",
   ingredients: [],
   img: null,
-}
+};
 
 const AddRecipeForm = () => {
   const navigate = useNavigate();
@@ -44,10 +42,12 @@ const AddRecipeForm = () => {
   const [areas, setAreas] = useState<SelectOption[]>([]);
   const [ingredientsOptions, setIngredientsOptions] = useState<{ id: string; name: string }[]>([]);
 
-  const formik = useFormik({
+  const formik = useFormik<AddRecipeFormValues>({
     initialValues,
     validationSchema: addRecipeValidationSchema,
-    onSubmit: async values => {
+    validateOnBlur: true,
+    validateOnChange: false,
+    onSubmit: async (values) => {
       try {
         const created = await createRecipe({
           name: values.name,
@@ -83,18 +83,18 @@ const AddRecipeForm = () => {
           catRes.data.map((c: any) => ({
             value: c.id,
             label: c.name,
-          }))
+          })),
         );
 
         setAreas(
           areaRes.data.map((a: any) => ({
             value: a.id,
             label: a.name,
-          }))
+          })),
         );
 
         setIngredientsOptions(ingRes.data);
-      } catch (e) {
+      } catch {
         iziToast.error({
           title: "Error",
           message: "Failed to load form data",
@@ -102,7 +102,7 @@ const AddRecipeForm = () => {
       }
     };
 
-    loadData();
+    void loadData();
   }, []);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -110,15 +110,15 @@ const AddRecipeForm = () => {
     if (!file) return;
 
     formik.setFieldValue("img", file);
+    formik.setFieldTouched("img", false, false);
+
     setImagePreview(URL.createObjectURL(file));
   };
 
   const handleAddIngredient = () => {
     if (!selectedIngredient || !ingredientQuantity) return;
 
-    const ingredient = ingredientsOptions.find(
-      ing => ing.id === selectedIngredient
-    );
+    const ingredient = ingredientsOptions.find((ing) => ing.id === selectedIngredient);
     if (!ingredient) return;
 
     if (formik.values.ingredients.includes(ingredient.id)) {
@@ -129,7 +129,7 @@ const AddRecipeForm = () => {
       return;
     }
 
-    setIngredientsUI(prev => [
+    setIngredientsUI((prev) => [
       ...prev,
       {
         id: ingredient.id,
@@ -138,31 +138,34 @@ const AddRecipeForm = () => {
       },
     ]);
 
-    formik.setFieldValue("ingredients", [
-      ...formik.values.ingredients,
-      ingredient.id,
-    ]);
+    formik.setFieldValue("ingredients", [...formik.values.ingredients, ingredient.id]);
+    formik.setFieldTouched("ingredients", false, false);
 
     setSelectedIngredient("");
     setIngredientQuantity("");
   };
 
   const handleRemoveIngredient = (id: string) => {
-    setIngredientsUI(prev => prev.filter(i => i.id !== id));
+    setIngredientsUI((prev) => prev.filter((i) => i.id !== id));
     formik.setFieldValue(
       "ingredients",
-      formik.values.ingredients.filter(i => i !== id)
+      formik.values.ingredients.filter((i) => i !== id),
     );
+    formik.setFieldTouched("ingredients", false, false);
   };
 
   const handleClear = () => {
     formik.resetForm();
     setIngredientsUI([]);
     setImagePreview(null);
+    setSelectedIngredient("");
+    setIngredientQuantity("");
   };
 
+  const showError = (field: keyof AddRecipeFormValues) => Boolean(formik.touched[field] && formik.errors[field]);
+
   return (
-    <form onSubmit={formik.handleSubmit} className={styles.form}>
+    <form onSubmit={formik.handleSubmit} className={styles.form} noValidate>
       <div className={styles.left}>
         <div className={styles.imageSection}>
           <label className={styles.imageDropzone} htmlFor="recipeImage">
@@ -199,9 +202,11 @@ const AddRecipeForm = () => {
 
             <input
               id="recipeImage"
+              name="img"
               type="file"
               accept="image/*"
               onChange={handleImageChange}
+              onBlur={() => formik.setFieldTouched("img", true, true)}
               className={styles.fileInput}
             />
           </label>
@@ -215,6 +220,8 @@ const AddRecipeForm = () => {
               Upload another photo
             </button>
           )}
+
+          {showError("img") && <p className={styles.fieldError}>{formik.errors.img as string}</p>}
         </div>
       </div>
 
@@ -224,21 +231,31 @@ const AddRecipeForm = () => {
         <Input
           name="name"
           value={formik.values.name}
-          onChange={formik.handleChange}
+          onChange={(e) => {
+            formik.handleChange(e);
+            formik.setFieldTouched("name", false, false);
+          }}
+          // @ts-ignore
+          onBlur={formik.handleBlur}
           placeholder="Enter recipe name"
-          className={styles.nameInput}
+          className={classNames(styles.nameInput, showError("name") && styles.inputError)}
         />
+        {showError("name") && <p className={styles.fieldError}>{formik.errors.name}</p>}
 
         <div className={styles.field}>
-
           <TextArea
             name="description"
             value={formik.values.description}
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              formik.handleChange(e);
+              formik.setFieldTouched("description", false, false);
+            }}
+            onBlur={formik.handleBlur}
             maxLength={200}
             placeholder="Enter a description of the dish"
-            className={styles.textareaLine}
+            className={classNames(styles.textareaLine, showError("description") && styles.inputError)}
           />
+          {showError("description") && <p className={styles.fieldError}>{formik.errors.description}</p>}
         </div>
 
         <div className={styles.row}>
@@ -247,11 +264,17 @@ const AddRecipeForm = () => {
             <Select
               name="categoryId"
               value={formik.values.categoryId}
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                formik.setFieldValue("categoryId", e.target.value);
+                formik.setFieldTouched("categoryId", false, false);
+              }}
+              onBlur={() => formik.setFieldTouched("categoryId", true, true)}
               options={categories}
               placeholder="Select a category"
+              error={showError("categoryId") ? (formik.errors.categoryId as string) : undefined}
               className={styles.selectPill}
             />
+            {showError("categoryId") && <p className={styles.fieldError}>{formik.errors.categoryId}</p>}
           </div>
 
           <div className={classNames(styles.field, styles.w50)}>
@@ -260,7 +283,10 @@ const AddRecipeForm = () => {
               <button
                 type="button"
                 className={styles.timeBtn}
-                onClick={() => formik.setFieldValue("time", Math.max(1, formik.values.time - 1))}
+                onClick={() => {
+                  formik.setFieldValue("time", Math.max(1, formik.values.time - 1));
+                  formik.setFieldTouched("time", false, false);
+                }}
               >
                 −
               </button>
@@ -270,11 +296,15 @@ const AddRecipeForm = () => {
               <button
                 type="button"
                 className={styles.timeBtn}
-                onClick={() => formik.setFieldValue("time", formik.values.time + 1)}
+                onClick={() => {
+                  formik.setFieldValue("time", formik.values.time + 1);
+                  formik.setFieldTouched("time", false, false);
+                }}
               >
                 +
               </button>
             </div>
+            {showError("time") && <p className={styles.fieldError}>{formik.errors.time as string}</p>}
           </div>
         </div>
 
@@ -283,11 +313,17 @@ const AddRecipeForm = () => {
           <Select
             name="areaId"
             value={formik.values.areaId}
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              formik.setFieldValue("areaId", e.target.value);
+              formik.setFieldTouched("areaId", false, false);
+            }}
+            onBlur={() => formik.setFieldTouched("areaId", true, true)}
             options={areas}
             placeholder="Area"
+            error={showError("areaId") ? (formik.errors.areaId as string) : undefined}
             className={styles.selectPill}
           />
+          {showError("areaId") && <p className={styles.fieldError}>{formik.errors.areaId}</p>}
         </div>
 
         <div className={styles.field}>
@@ -296,31 +332,42 @@ const AddRecipeForm = () => {
           <div className={styles.ingredientsRow}>
             <Select
               value={selectedIngredient}
-              onChange={e => setSelectedIngredient(e.target.value)}
-              options={ingredientsOptions.map(i => ({ value: i.id, label: i.name }))}
+              onChange={(e) => setSelectedIngredient(e.target.value)}
+              options={ingredientsOptions.map((i) => ({ value: i.id, label: i.name }))}
               placeholder="Add the ingredient"
               className={styles.selectPill}
             />
 
             <input
               value={ingredientQuantity}
-              onChange={e => setIngredientQuantity(e.target.value)}
+              onChange={(e) => setIngredientQuantity(e.target.value)}
               placeholder="Enter quantity"
               className={styles.inputLine}
             />
           </div>
 
-          <Button type="button" variant="outlined-light" onClick={handleAddIngredient} className={styles.addIngredientBtn}>
+          <Button
+            type="button"
+            variant="outlined-light"
+            onClick={handleAddIngredient}
+            className={styles.addIngredientBtn}
+          >
             ADD INGREDIENT +
           </Button>
 
+          {showError("ingredients") && <p className={styles.fieldError}>{formik.errors.ingredients as string}</p>}
+
           {!!ingredientsUI.length && (
             <div className={styles.ingredientsList}>
-              {ingredientsUI.map(i => (
+              {ingredientsUI.map((i) => (
                 <div key={i.id} className={styles.ingredientChip}>
                   <span className={styles.ingredientName}>{i.name}</span>
                   <span className={styles.ingredientQty}>{i.quantity}</span>
-                  <button type="button" className={styles.removeChip} onClick={() => handleRemoveIngredient(i.id)}>
+                  <button
+                    type="button"
+                    className={styles.removeChip}
+                    onClick={() => handleRemoveIngredient(i.id)}
+                  >
                     ✕
                   </button>
                 </div>
@@ -334,16 +381,27 @@ const AddRecipeForm = () => {
           <TextArea
             name="instructions"
             value={formik.values.instructions}
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              formik.handleChange(e);
+              formik.setFieldTouched("instructions", false, false);
+            }}
+            onBlur={formik.handleBlur}
             maxLength={1000}
             placeholder="Enter recipe"
-            className={styles.textareaLine}
+            className={classNames(styles.textareaLine, showError("instructions") && styles.inputError)}
           />
+          {showError("instructions") && <p className={styles.fieldError}>{formik.errors.instructions}</p>}
         </div>
 
         <div className={styles.actions}>
-          <Button type="button" variant="light" onClick={handleClear} icon={<IconTrash />} className={styles.trashBtn} size="large">
-          </Button>
+          <Button
+            type="button"
+            variant="light"
+            onClick={handleClear}
+            icon={<IconTrash />}
+            className={styles.trashBtn}
+            size="large"
+          ></Button>
 
           <Button type="submit" variant="dark" className={styles.publishBtn}>
             PUBLISH
