@@ -32,8 +32,6 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
     }
   }, [favoriteFromProps]);
 
-  const [imageSrc, setImageSrc] = useState<string>(noImage);
-
   async function handleFavoriteClick() {
     if (!isAuthenticated || favPending) return;
 
@@ -73,8 +71,6 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
     }
   }
 
-  const authorName = "Author";
-
   return (
     <div className={styles.card}>
       <Image
@@ -89,9 +85,9 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
       <div className={styles.info}>
         <div className={styles.userInfo}>
           <div className={styles.avatarContainer}>
-            <Avatar />
+            <Avatar src={recipe?.owner?.avatar} alt={recipe?.owner?.name} />
           </div>
-          <h4 className={styles.name}>{authorName}</h4>
+          <h4 className={styles.name}>{recipe?.owner?.name}</h4>
         </div>
 
         <div className={styles.buttons}>
