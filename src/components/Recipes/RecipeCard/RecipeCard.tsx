@@ -12,6 +12,7 @@ import Button from "../../ui/Button";
 import { ReactComponent as IconArrowUp } from "../../../assets/icons/icon-arrow-up.svg";
 import { ReactComponent as IconHeart } from "../../../assets/icons/icon-heart.svg";
 import Avatar from "../../Avatar";
+import Image from "../../Image";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -62,11 +63,10 @@ const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
 
   return (
     <div className={styles.card}>
-      <img
-        className={styles.image}
+      <Image
         src={imageSrc}
+        className={styles.image}
         alt={recipe.name}
-        onError={() => setImageSrc(noImage)}
       />
 
       <h3 className={styles.title}>{recipe.name}</h3>

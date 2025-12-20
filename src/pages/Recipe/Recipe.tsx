@@ -14,7 +14,6 @@ import {
   type RecipeDetails,
 } from "../../api/recipes";
 
-import DEFAULT_RECIPE_IMAGE_SRC from "../../assets/recipes/no-image.png";
 import Avatar from "../../components/Avatar";
 import Image from "../../components/Image";
 
@@ -182,13 +181,10 @@ const Recipe = () => {
                   {recipe.ingredients.map((ing) => (
                     <li key={ing.id} className={styles.ingredientItem}>
                       <div className={styles.ingredientIcon}>
-                        <img
-                          src={ing.imageUrl || DEFAULT_RECIPE_IMAGE_SRC}
+                        <Image
+                          src={ing.imageUrl}
                           alt={ing.name}
-                          onError={(e) => {
-                            const img = e.currentTarget;
-                            if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
-                          }}
+                          className={styles.ingredientImage}
                         />
                       </div>
 
@@ -240,13 +236,10 @@ const Recipe = () => {
                   }}
                 >
                   <div className={styles.popularImageWrap}>
-                    <img
-                      src={item.imageUrl || DEFAULT_RECIPE_IMAGE_SRC}
+                    <Image
+                      src={item.imageUrl}
                       alt={item.title}
-                      onError={(e) => {
-                        const img = e.currentTarget;
-                        if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
-                      }}
+                      className={styles.popularImage}
                     />
                   </div>
 
@@ -258,18 +251,7 @@ const Recipe = () => {
                   <div className={styles.popularFooter}>
                     <div className={styles.popularAuthor}>
                       <div className={styles.popularAvatar}>
-                        {item.author?.avatarUrl ? (
-                          <img
-                            src={item.author.avatarUrl}
-                            alt={item.author.name}
-                            onError={(e) => {
-                              const img = e.currentTarget;
-                              if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
-                            }}
-                          />
-                        ) : (
-                          <span>{item.author?.name?.[0]?.toUpperCase() ?? "U"}</span>
-                        )}
+                        <Avatar src={item.author?.avatarUrl ?? undefined} alt={item.author?.name ?? "User"} />
                       </div>
                       <span className={styles.popularAuthorName}>{item.author?.name ?? ""}</span>
                     </div>
