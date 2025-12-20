@@ -276,7 +276,6 @@ const AddRecipeForm = () => {
               error={showError("categoryId") ? (formik.errors.categoryId as string) : undefined}
               className={styles.selectPill}
             />
-            {showError("categoryId") && <p className={styles.fieldError}>{formik.errors.categoryId}</p>}
           </div>
 
           <div className={classNames(styles.field, styles.w50)}>
@@ -325,7 +324,6 @@ const AddRecipeForm = () => {
             error={showError("areaId") ? (formik.errors.areaId as string) : undefined}
             className={styles.selectPill}
           />
-          {showError("areaId") && <p className={styles.fieldError}>{formik.errors.areaId}</p>}
         </div>
 
         <div className={styles.field}>
