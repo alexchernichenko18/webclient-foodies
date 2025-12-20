@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import Categories from "../../components/Categories";
 import Recipes from "../../components/Recipes";
@@ -16,9 +16,43 @@ const Main = () => {
     ingredientId: "",
     areaId: "",
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [recipesPerPage, setRecipesPerPage] = useState(12);
+  
   const { categories } = useSelector((state: RootState) => state.categories);
 
-  const loadRecipes = async (categoryId: string | null, ingredientId?: string, areaId?: string) => {
+  // Відстежуємо розмір екрану
+  useEffect(() => {
+    const updateRecipesPerPage = () => {
+      const isMobile = window.innerWidth < 768;
+      setRecipesPerPage(isMobile ? 8 : 12);
+    };
+
+    // Встановлюємо початкове значення
+    updateRecipesPerPage();
+
+    // Слухаємо зміни розміру вікна
+    window.addEventListener('resize', updateRecipesPerPage);
+
+    // Очищуємо слухач при розмонтуванні
+    return () => window.removeEventListener('resize', updateRecipesPerPage);
+  }, []);
+
+  // Перезавантажуємо рецепти при зміні recipesPerPage
+  useEffect(() => {
+    if (showRecipes) {
+      loadRecipes(selectedCategoryId, filters.ingredientId, filters.areaId, 1);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [recipesPerPage]);
+
+  const loadRecipes = async (
+    categoryId: string | null, 
+    ingredientId?: string, 
+    areaId?: string,
+    page: number = 1
+  ) => {
     try {
       setLoading(true);
 
@@ -26,11 +60,14 @@ const Main = () => {
         categoryId: categoryId,
         ingredientName: ingredientId || undefined,
         areaId: areaId || undefined,
-        page: 1,
-        limit: 10,
+        page: page,
+        limit: recipesPerPage,  // ← Використовуємо динамічний ліміт
       });
 
       setRecipes(response.recipes);
+      setTotalPages(response.totalPages);
+      setCurrentPage(page);
+      
       console.log("Recipes loaded:", response);
       // Діагностика: перевіряємо чи є isFavorite в рецептах
       response.recipes.forEach((recipe, index) => {
@@ -58,8 +95,9 @@ const Main = () => {
     setSelectedCategoryName(categoryName);
     setShowRecipes(true);
     setFilters({ ingredientId: "", areaId: "" }); // Скидаємо фільтри
+    setCurrentPage(1); // Скидаємо на першу сторінку
 
-    await loadRecipes(categoryId);
+    await loadRecipes(categoryId, "", "", 1);
   };
 
   const handleFilterChange = (selectedId: string, filterType: "ingredients" | "areas") => {
@@ -71,9 +109,14 @@ const Main = () => {
     };
 
     setFilters(newFilters);
+    setCurrentPage(1); // Скидаємо на першу сторінку при зміні фільтра
 
     // Перезавантажуємо рецепти з новими фільтрами
-    loadRecipes(selectedCategoryId, newFilters.ingredientId, newFilters.areaId);
+    loadRecipes(selectedCategoryId, newFilters.ingredientId, newFilters.areaId, 1);
+  };
+
+  const handlePageChange = (page: number) => {
+    loadRecipes(selectedCategoryId, filters.ingredientId, filters.areaId, page);
   };
 
   const handleBackClick = () => {
@@ -82,6 +125,8 @@ const Main = () => {
     setSelectedCategoryName(null);
     setRecipes([]);
     setFilters({ ingredientId: "", areaId: "" });
+    setCurrentPage(1);
+    setTotalPages(1);
   };
 
   const handleFavoriteChange = (recipeId: string, isFavorite: boolean) => {
@@ -94,7 +139,17 @@ const Main = () => {
     <div className={styles.wrap}>
       {!showRecipes && <Categories onCategoryClick={handleCategoryClick} />}
       {showRecipes && (
-        <Recipes recipes={recipes} loading={loading} onBack={handleBackClick} categoryName={selectedCategoryName} onFilterChange={handleFilterChange} onFavoriteChange={handleFavoriteChange} />
+        <Recipes 
+          recipes={recipes} 
+          loading={loading} 
+          onBack={handleBackClick} 
+          categoryName={selectedCategoryName} 
+          onFilterChange={handleFilterChange} 
+          onFavoriteChange={handleFavoriteChange}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       )}
     </div>
   );
