@@ -20,6 +20,13 @@ import type { SelectOption } from "../../components/AddRecipeForm/types";
 import classNames from "classnames";
 import { createRecipe } from "../../api/recipes";
 
+// Додаємо тип IngredientOption
+type IngredientOption = {
+  id: string;
+  name: string;
+  img?: string;
+};
+
 const initialValues: AddRecipeFormValues = {
   name: "",
   description: "",
@@ -40,7 +47,7 @@ const AddRecipeForm = () => {
   const [ingredientQuantity, setIngredientQuantity] = useState("");
   const [categories, setCategories] = useState<SelectOption[]>([]);
   const [areas, setAreas] = useState<SelectOption[]>([]);
-  const [ingredientsOptions, setIngredientsOptions] = useState<{ id: string; name: string }[]>([]);
+  const [ingredientsOptions, setIngredientsOptions] = useState<IngredientOption[]>([]);
 
   const formik = useFormik<AddRecipeFormValues>({
     initialValues,
@@ -49,7 +56,6 @@ const AddRecipeForm = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
-        console.log('values.ingredients', values.ingredients);
         const created = await createRecipe({
           name: values.name,
           description: values.description,
@@ -60,7 +66,6 @@ const AddRecipeForm = () => {
           ingredientIds: values.ingredients,
           img: values.img,
         });
-
         navigate(`/recipe/${created.id}`);
       } catch {
         iziToast.error({
@@ -84,18 +89,24 @@ const AddRecipeForm = () => {
           catRes.data.map((c: any) => ({
             value: c.id,
             label: c.name,
-          })),
+          }))
         );
 
         setAreas(
           areaRes.data.map((a: any) => ({
             value: a.id,
             label: a.name,
-          })),
+          }))
         );
 
         const ingredientsData = ingRes.data.filter((i: any) => Boolean(i.description));
-        setIngredientsOptions(ingredientsData);
+        setIngredientsOptions(
+          ingredientsData.map((i: any) => ({
+            id: i.id,
+            name: i.name,
+            img: i.img, // картинка
+          }))
+        );
       } catch {
         iziToast.error({
           title: "Error",
@@ -113,7 +124,6 @@ const AddRecipeForm = () => {
 
     formik.setFieldValue("img", file);
     formik.setFieldTouched("img", false, false);
-
     setImagePreview(URL.createObjectURL(file));
   };
 
@@ -137,6 +147,7 @@ const AddRecipeForm = () => {
         id: ingredient.id,
         name: ingredient.name,
         quantity: ingredientQuantity,
+        img: ingredient.img,
       },
     ]);
 
@@ -151,7 +162,7 @@ const AddRecipeForm = () => {
     setIngredientsUI((prev) => prev.filter((i) => i.id !== id));
     formik.setFieldValue(
       "ingredients",
-      formik.values.ingredients.filter((i) => i !== id),
+      formik.values.ingredients.filter((i) => i !== id)
     );
     formik.setFieldTouched("ingredients", false, false);
   };
@@ -164,7 +175,8 @@ const AddRecipeForm = () => {
     setIngredientQuantity("");
   };
 
-  const showError = (field: keyof AddRecipeFormValues) => Boolean(formik.touched[field] && formik.errors[field]);
+  const showError = (field: keyof AddRecipeFormValues) =>
+    Boolean(formik.touched[field] && formik.errors[field]);
 
   return (
     <form onSubmit={formik.handleSubmit} className={styles.form} noValidate>
@@ -190,14 +202,9 @@ const AddRecipeForm = () => {
                       strokeWidth="1.4"
                       strokeLinejoin="round"
                     />
-                    <path
-                      d="M12 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
-                      stroke="currentColor"
-                      strokeWidth="1.4"
-                    />
+                    <path d="M12 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" stroke="currentColor" strokeWidth="1.4" />
                   </svg>
                 </div>
-
                 <span className={styles.uploadCta}>Upload a photo</span>
               </div>
             )}
@@ -285,11 +292,11 @@ const AddRecipeForm = () => {
                 type="button"
                 className={styles.timeBtn}
                 onClick={() => {
-                  formik.setFieldValue("time", Math.max(1, formik.values.time - 1));
+                  formik.setFieldValue("time", Math.max(0, formik.values.time - 5));
                   formik.setFieldTouched("time", false, false);
                 }}
               >
-                −
+                -
               </button>
 
               <span className={styles.timeValue}>{formik.values.time} min</span>
@@ -298,7 +305,7 @@ const AddRecipeForm = () => {
                 type="button"
                 className={styles.timeBtn}
                 onClick={() => {
-                  formik.setFieldValue("time", formik.values.time + 1);
+                  formik.setFieldValue("time", formik.values.time + 5);
                   formik.setFieldTouched("time", false, false);
                 }}
               >
@@ -327,54 +334,57 @@ const AddRecipeForm = () => {
         </div>
 
         <div className={styles.field}>
-          <p className={styles.label}>INGREDIENTS</p>
+  <p className={styles.label}>INGREDIENTS</p>
 
-          <div className={styles.ingredientsRow}>
-            <Select
-              value={selectedIngredient}
-              onChange={(e) => setSelectedIngredient(e.target.value)}
-              options={ingredientsOptions.map((i) => ({ value: i.id, label: i.name }))}
-              placeholder="Add the ingredient"
-              className={styles.selectPill}
-            />
+  <div className={styles.ingredientsRow}>
+    <Select
+      value={selectedIngredient}
+      onChange={(e) => setSelectedIngredient(e.target.value)}
+      options={ingredientsOptions.map((i) => ({ value: i.id, label: i.name }))}
+      placeholder="Add the ingredient"
+      className={styles.selectPill}
+    />
 
-            <input
-              value={ingredientQuantity}
-              onChange={(e) => setIngredientQuantity(e.target.value)}
-              placeholder="Enter quantity"
-              className={styles.inputLine}
-            />
+    <input
+      value={ingredientQuantity}
+      onChange={(e) => setIngredientQuantity(e.target.value)}
+      placeholder="Enter quantity"
+      className={styles.inputLine}
+    />
+  </div>
+
+  <Button
+    type="button"
+    variant="outlined-light"
+    onClick={handleAddIngredient}
+    className={styles.addIngredientBtn}
+  >
+    ADD INGREDIENT +
+  </Button>
+
+  {showError("ingredients") && <p className={styles.fieldError}>{formik.errors.ingredients as string}</p>}
+
+  {!!ingredientsUI.length && (
+    <div className={styles.ingredientsList}>
+      {ingredientsUI.map((i) => (
+        <div key={i.id} className={styles.ingredientChip}>
+          {i.img && <img src={i.img} alt={i.name} className={styles.ingredientImg} />}
+          <div className={styles.ingredientMeta}>
+            <button
+              type="button"
+              className={styles.removeChip}
+              onClick={() => handleRemoveIngredient(i.id)}
+            >
+              ✕
+            </button>
+            <span className={styles.ingredientName}>{i.name}</span>
+            <span className={styles.ingredientQty}>{i.quantity}</span>
           </div>
-
-          <Button
-            type="button"
-            variant="outlined-light"
-            onClick={handleAddIngredient}
-            className={styles.addIngredientBtn}
-          >
-            ADD INGREDIENT +
-          </Button>
-
-          {showError("ingredients") && <p className={styles.fieldError}>{formik.errors.ingredients as string}</p>}
-
-          {!!ingredientsUI.length && (
-            <div className={styles.ingredientsList}>
-              {ingredientsUI.map((i) => (
-                <div key={i.id} className={styles.ingredientChip}>
-                  <span className={styles.ingredientName}>{i.name}</span>
-                  <span className={styles.ingredientQty}>{i.quantity}</span>
-                  <button
-                    type="button"
-                    className={styles.removeChip}
-                    onClick={() => handleRemoveIngredient(i.id)}
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
+      ))}
+    </div>
+  )}
+</div>
 
         <div className={styles.field}>
           <p className={styles.label}>RECIPE PREPARATION</p>
@@ -401,8 +411,7 @@ const AddRecipeForm = () => {
             icon={<IconTrash />}
             className={styles.trashBtn}
             size="large"
-          ></Button>
-
+          />
           <Button type="submit" variant="dark" className={styles.publishBtn}>
             PUBLISH
           </Button>
