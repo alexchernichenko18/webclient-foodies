@@ -1,12 +1,17 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { type Recipe } from "../../../api/recipes";
+import {
+  addRecipeToFavorites,
+  removeRecipeFromFavorites,
+  type Recipe,
+} from "../../../api/recipes";
 import { RootState } from "../../../store";
 import noImage from "../../../assets/recipes/no-image.png";
-import noAvatar from "../../../assets/recipes/no-avatar.jpg";
-import icons from "../../../assets/icons/icon-plus.svg";
 import styles from "./RecipeCard.module.scss";
+import Button from "../../ui/Button";
+import { ReactComponent as IconArrowUp } from "../../../assets/icons/icon-arrow-up.svg";
+import { ReactComponent as IconHeart } from "../../../assets/icons/icon-heart.svg";
+import Avatar from "../../Avatar";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -14,80 +19,84 @@ interface RecipeCardProps {
 }
 
 const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
-  const [favorite, setFavorite] = useState(isFavorite);
-  // Використовуємо isAuthenticated з вашого auth slice
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-  const handleFavoriteClick = () => {
-    setFavorite(!favorite);
-    // TODO: Додати виклик API для додавання/видалення з улюблених
-    // addRecipeToFavorites або removeRecipeFromFavorites
-  };
+  const [favorite, setFavorite] = useState(isFavorite);
+  const [favPending, setFavPending] = useState(false);
 
-  // Отримуємо URL зображення
-  const getImageUrl = (img: string | null) => {
-    if (!img) return noImage;
-    return img.startsWith("http") 
-      ? img 
-      : `${process.env.REACT_APP_BASE_URL}${img}`;
-  };
+  const [imageSrc, setImageSrc] = useState<string>(noImage);
 
-  // Отримуємо дані автора - поки заглушка, потім з recipe
-  const authorName = "Author"; // TODO: recipe.owner?.name || "Author"
-  const authorAvatar = null; // TODO: recipe.owner?.avatar
+  useEffect(() => {
+    setFavorite(isFavorite);
+  }, [isFavorite]);
+
+  useEffect(() => {
+    const img = recipe.img ?? null;
+    if (!img) {
+      setImageSrc(noImage);
+      return;
+    }
+    setImageSrc(img.startsWith("http") ? img : `${process.env.REACT_APP_BASE_URL}${img}`);
+  }, [recipe.img]);
+
+  async function handleFavoriteClick() {
+    if (!isAuthenticated || favPending) return;
+
+    try {
+      setFavPending(true);
+
+      const nextIsFavorite = favorite
+        ? await removeRecipeFromFavorites(recipe.id)
+        : await addRecipeToFavorites(recipe.id);
+
+      setFavorite(nextIsFavorite);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Failed to update favorites";
+      alert(message);
+    } finally {
+      setFavPending(false);
+    }
+  }
+
+  const authorName = "Author";
+  const authorAvatar: string | null = null;
 
   const getAvatarUrl = (avatar: string | null) => {
-    if (!avatar) return noAvatar;
-    return avatar.startsWith("http")
-      ? avatar
-      : `${process.env.REACT_APP_BASE_URL}${avatar}`;
+    if (!avatar) return undefined;
+    return avatar.startsWith("http") ? avatar : `${process.env.REACT_APP_BASE_URL}${avatar}`;
   };
 
   return (
     <div className={styles.card}>
       <img
         className={styles.image}
-        src={getImageUrl(recipe.img)}
+        src={imageSrc}
         alt={recipe.name}
+        onError={() => setImageSrc(noImage)}
       />
-      
+
       <h3 className={styles.title}>{recipe.name}</h3>
       <p className={styles.text}>{recipe.description}</p>
-      
+
       <div className={styles.info}>
         <div className={styles.userInfo}>
           <div className={styles.avatarContainer}>
-            <img
-              className={styles.avatar}
-              src={getAvatarUrl(authorAvatar)}
-              alt={authorName}
-            />
+            <Avatar src={getAvatarUrl(authorAvatar) ?? null} alt={authorName} />
           </div>
           <h4 className={styles.name}>{authorName}</h4>
         </div>
-        
+
         <div className={styles.buttons}>
           {isAuthenticated && (
-            <button
-              className={`${styles.btn} ${favorite ? styles.btnFavoriteActive : ''}`}
+            <Button
               onClick={handleFavoriteClick}
-              type="button"
-              aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-            >
-              <svg className={styles.icon}>
-                <use href={`${icons}#icon-heart`}></use>
-              </svg>
-            </button>
+              variant={favorite ? "dark" : "light"}
+              icon={<IconHeart />}
+              disabled={favPending}
+            />
           )}
-          
-          <NavLink
-            to={`/recipe/${recipe.id}`}
-            className={styles.btn}
-          >
-            <svg className={styles.icon}>
-              <use href={`${icons}#icon-arrow-up-right`}></use>
-            </svg>
-          </NavLink>
+
+          <Button href={`/recipe/${recipe.id}`} variant="light" icon={<IconArrowUp />} />
         </div>
       </div>
     </div>

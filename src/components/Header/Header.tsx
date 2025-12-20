@@ -17,6 +17,7 @@ import {
 } from "../../store/slices/modalSlice";
 
 import MobileMenu from "../MobileMenu/MobileMenu";
+import Avatar from "../Avatar";
 
 type HeaderVariant = "dark" | "light";
 
@@ -63,6 +64,12 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
     [styles.light]: !isDark,
   });
 
+  const onAddRecipeClickHandler = () => {
+    if (!isAuthenticated) {
+      dispatch(openSignInModal());
+    }
+  }
+
   const onSignInClickHandler = () => dispatch(openSignInModal());
   const onSignUpClickHandler = () => dispatch(openSignUpModal());
   const onLogoutHandler = () => dispatch(openLogOutModal());
@@ -86,9 +93,10 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
               HOME
             </Button>
             <Button
-              href="/add"
+              href="/add-recipe"
               variant={isDark ? "dark" : "outlined-light"}
               size="small"
+              onClick={onAddRecipeClickHandler}
             >
               ADD RECIPE
             </Button>
@@ -123,7 +131,7 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
                   onClick={() => setIsProfileOpen(prev => !prev)}
                 >
                   <div className={styles.avatar}>
-                    {user?.name?.charAt(0)}
+                    <Avatar src={user?.avatar} alt={user?.name} />
                   </div>
                   <span className={styles.name}>{user?.name}</span>
                   <span className={styles.chevron}>
@@ -152,7 +160,7 @@ const Header = ({ variant = "dark" }: HeaderProps) => {
             {/* MOBILE BURGER */}
             <button
               type="button"
-                className={classNames(styles.burger, isDark ? styles.burgerWhite : styles.burgerBlack)}
+              className={classNames(styles.burger, isDark ? styles.burgerWhite : styles.burgerBlack)}
               onClick={() => setIsMobileMenuOpen(true)}
               aria-label="Open mobile menu"
             >
