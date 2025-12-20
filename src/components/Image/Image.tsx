@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import styles from "./Avatar.module.scss";
-import noAvatar from "../../assets/recipes/no-avatar.jpg";
+import noImage from "../../assets/recipes/no-image.png";
 
 interface IAvatarProps {
   src?: string | null;
   alt?: string;
+  className?: string;
 }
 
-const Avatar = ({ src, alt = "Avatar" }: IAvatarProps) => {
+const Image = ({ src, alt = "Recipe Image", className }: IAvatarProps) => {
   const [imgSrc, setImgSrc] = useState('');
 
   useEffect(() => {
@@ -20,17 +20,17 @@ const Avatar = ({ src, alt = "Avatar" }: IAvatarProps) => {
       return;
     }
 
-    setImgSrc(noAvatar);
+    setImgSrc(noImage);
   }, [src]);
 
   return (
     <img
       src={imgSrc}
       alt={alt}
-      className={styles.avatar}
-      onError={() => setImgSrc(noAvatar)}
+      className={className}
+      onError={() => setImgSrc(noImage)}
     />
   );
 };
 
-export default Avatar;
+export default Image;

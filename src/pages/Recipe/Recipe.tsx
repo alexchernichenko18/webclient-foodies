@@ -16,6 +16,7 @@ import {
 
 import DEFAULT_RECIPE_IMAGE_SRC from "../../assets/recipes/no-image.png";
 import Avatar from "../../components/Avatar";
+import Image from "../../components/Image";
 
 const Recipe = () => {
   const { id } = useParams<{ id: string }>();
@@ -147,15 +148,7 @@ const Recipe = () => {
           <section className={styles.topSection}>
             <div className={styles.topGrid}>
               <div className={styles.imageWrap}>
-                <img
-                  className={styles.image}
-                  src={recipe.imageUrl || DEFAULT_RECIPE_IMAGE_SRC}
-                  alt={recipe.title}
-                  onError={(e) => {
-                    const img = e.currentTarget;
-                    if (img.src !== DEFAULT_RECIPE_IMAGE_SRC) img.src = DEFAULT_RECIPE_IMAGE_SRC;
-                  }}
-                />
+                <Image src={recipe.imageUrl} className={styles.image} alt={recipe.title} />
               </div>
 
               <div className={styles.content}>
