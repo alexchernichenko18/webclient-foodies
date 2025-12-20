@@ -1,3 +1,5 @@
+@import "../../../styles/variables.scss";
+
 .card {
   list-style: none;
   width: 100%;
@@ -32,7 +34,7 @@
   line-height: 20px;
   letter-spacing: -0.24px;
   text-transform: uppercase;
-  color: #3E4462;
+  color: #3e4462;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -44,7 +46,7 @@
   line-height: 16px;
   letter-spacing: -0.24px;
   font-weight: 400;
-  color: #23262A;
+  color: #23262a;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -63,6 +65,8 @@
   align-items: center;
   flex: 1;
   min-width: 0;
+  color: $color-dark;
+  text-decoration: none;
 }
 
 .avatarContainer {
@@ -86,12 +90,13 @@
   line-height: 16px;
   letter-spacing: -0.24px;
   font-weight: 600;
-  color: #3E4462;
+  color: #3e4462;
   opacity: 0.6;
   overflow: hidden;
   max-width: 150px;
   white-space: nowrap;
   text-overflow: ellipsis;
+  text-decoration: none;
 }
 
 .buttons {
@@ -108,23 +113,23 @@
   width: 36px;
   border-radius: 50%;
   background-color: #fff;
-  border: 1.5px solid #8BAA36;
+  border: 1.5px solid #8baa36;
   cursor: pointer;
   transition: all 0.3s;
   padding: 0;
   text-decoration: none;
 
   &:hover {
-    background-color: #8BAA36;
-    
+    background-color: #8baa36;
+
     .icon {
       stroke: white;
     }
   }
 
   &.btnFavoriteActive {
-    background-color: #8BAA36;
-    
+    background-color: #8baa36;
+
     .icon {
       fill: white;
       stroke: white;
@@ -135,7 +140,7 @@
 .icon {
   height: 16px;
   width: 16px;
-  stroke: #8BAA36;
+  stroke: #8baa36;
   fill: none;
   transition: all 0.3s;
 }

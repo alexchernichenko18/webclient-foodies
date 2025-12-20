@@ -8,6 +8,7 @@ import { ReactComponent as IconArrowUp } from "../../../assets/icons/icon-arrow-
 import { ReactComponent as IconHeart } from "../../../assets/icons/icon-heart.svg";
 import Avatar from "../../Avatar";
 import Image from "../../Image";
+import { NavLink } from "react-router-dom";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -83,12 +84,12 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
       <p className={styles.text}>{recipe.description}</p>
 
       <div className={styles.info}>
-        <div className={styles.userInfo}>
+        <NavLink className={styles.userInfo} to={`/profile/${recipe.owner?.id}`}>
           <div className={styles.avatarContainer}>
             <Avatar src={recipe?.owner?.avatar} alt={recipe?.owner?.name} />
           </div>
           <h4 className={styles.name}>{recipe?.owner?.name}</h4>
-        </div>
+        </NavLink>
 
         <div className={styles.buttons}>
           {isAuthenticated && <Button key={`favorite-${recipe.id}-${favorite}`} onClick={handleFavoriteClick} variant={favorite ? "dark" : "light"} icon={<IconHeart />} disabled={favPending} />}
@@ -96,7 +97,7 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
           <Button href={`/recipe/${recipe.id}`} variant="light" icon={<IconArrowUp />} />
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

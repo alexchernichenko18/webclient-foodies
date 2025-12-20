@@ -282,7 +282,10 @@ const Recipe = () => {
                   </div>
 
                   <div className={styles.popularFooter}>
-                    <div className={styles.popularAuthor}>
+                    <div className={styles.popularAuthor} onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/profile/${item.author?.id}`);
+                    }}>
                       <div className={styles.popularAvatar}>
                         <Avatar
                           src={item.author?.avatarUrl ?? undefined}
