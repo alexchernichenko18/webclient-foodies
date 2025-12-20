@@ -4,9 +4,10 @@ import styles from "./RecipesList.module.scss";
 
 interface RecipesListProps {
   recipes: Recipe[];
+  onFavoriteChange?: (recipeId: string, isFavorite: boolean) => void;
 }
 
-const RecipesList = ({ recipes }: RecipesListProps) => {
+const RecipesList = ({ recipes, onFavoriteChange }: RecipesListProps) => {
   if (recipes.length === 0) {
     return (
       <div className={styles.empty}>
@@ -19,7 +20,11 @@ const RecipesList = ({ recipes }: RecipesListProps) => {
     <ul className={styles.list}>
       {recipes.map((recipe) => (
         <li key={recipe.id} className={styles.item}>
-          <RecipeCard recipe={recipe} isFavorite={recipe.isFavorite} />
+          <RecipeCard 
+            recipe={recipe} 
+            isFavorite={recipe.isFavorite} 
+            onFavoriteChange={onFavoriteChange}
+          />
         </li>
       ))}
     </ul>
