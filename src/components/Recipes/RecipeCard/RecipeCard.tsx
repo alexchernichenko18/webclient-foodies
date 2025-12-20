@@ -59,12 +59,6 @@ const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
   }
 
   const authorName = "Author";
-  const authorAvatar: string | null = null;
-
-  const getAvatarUrl = (avatar: string | null) => {
-    if (!avatar) return undefined;
-    return avatar.startsWith("http") ? avatar : `${process.env.REACT_APP_BASE_URL}${avatar}`;
-  };
 
   return (
     <div className={styles.card}>
@@ -81,7 +75,7 @@ const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
       <div className={styles.info}>
         <div className={styles.userInfo}>
           <div className={styles.avatarContainer}>
-            <Avatar src={getAvatarUrl(authorAvatar) ?? null} alt={authorName} />
+            <Avatar />
           </div>
           <h4 className={styles.name}>{authorName}</h4>
         </div>
