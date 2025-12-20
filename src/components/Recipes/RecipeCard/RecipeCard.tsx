@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
 import { addRecipeToFavorites, removeRecipeFromFavorites, type Recipe } from "../../../api/recipes";
 import { RootState } from "../../../store";
-import noImage from "../../../assets/recipes/no-image.png";
 import styles from "./RecipeCard.module.scss";
 import Button from "../../ui/Button";
 import { ReactComponent as IconArrowUp } from "../../../assets/icons/icon-arrow-up.svg";
@@ -27,8 +26,6 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
   // Відстежуємо, чи ми оновлюємо favorite через клік (щоб useEffect не перезаписував)
   const isUpdatingFromClick = useRef(false);
 
-  // Синхронізуємо локальний стейт з пропами (коли дані оновлюються з сервера)
-  // Але не перезаписуємо, якщо ми оновлюємо через клік
   useEffect(() => {
     if (!isUpdatingFromClick.current) {
       setFavorite(favoriteFromProps);
@@ -36,20 +33,6 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
   }, [favoriteFromProps]);
 
   const [imageSrc, setImageSrc] = useState<string>(noImage);
-
-  useEffect(() => {
-    const img = recipe.img ?? null;
-    if (!img) {
-      setImageSrc(noImage);
-      return;
-    }
-    if (img.startsWith("http")) {
-      setImageSrc(img);
-    } else {
-      const baseURL = process.env.REACT_APP_BASE_URL_API || process.env.REACT_APP_BASE_URL || "";
-      setImageSrc(baseURL ? `${baseURL}${img}` : img);
-    }
-  }, [recipe.img]);
 
   async function handleFavoriteClick() {
     if (!isAuthenticated || favPending) return;
@@ -94,7 +77,11 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
 
   return (
     <div className={styles.card}>
-      <Image src={imageSrc} className={styles.image} alt={recipe.name} />
+      <Image
+        src={recipe.img}
+        className={styles.image}
+        alt={recipe.name}
+      />
 
       <h3 className={styles.title}>{recipe.name}</h3>
       <p className={styles.text}>{recipe.description}</p>
