@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styles from "./Recipe.module.scss";
 
@@ -14,8 +14,12 @@ import {
   type RecipeDetails,
 } from "../../api/recipes";
 
+import { getIngredients, type IngredientDetails as FullIngredient } from "../../api/ingredients";
+
 import Avatar from "../../components/Avatar";
 import Image from "../../components/Image";
+
+type IngredientsById = Record<string, FullIngredient>;
 
 const Recipe = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,11 +30,38 @@ const Recipe = () => {
   const [recipe, setRecipe] = useState<RecipeDetails | null>(null);
   const [popular, setPopular] = useState<PopularRecipe[]>([]);
 
+  const [ingredientsById, setIngredientsById] = useState<IngredientsById>({});
+
   const [loadingRecipe, setLoadingRecipe] = useState(false);
   const [loadingPopular, setLoadingPopular] = useState(false);
 
   const [favPending, setFavPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    getIngredients()
+      .then((items) => {
+        if (!isActive) return;
+
+        const map = items.reduce<IngredientsById>((acc, ing) => {
+          if (!ing.description) return acc;
+          acc[ing.id] = ing;
+          return acc;
+        }, {});
+
+        setIngredientsById(map);
+      })
+      .catch(() => {
+        if (!isActive) return;
+        setIngredientsById({});
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!recipeId) return;
@@ -44,9 +75,10 @@ const Recipe = () => {
         if (!isActive) return;
         setRecipe(data);
       })
-      .catch((e) => {
+      .catch((e: unknown) => {
         if (!isActive) return;
-        setError(e?.message ?? "Failed to load recipe");
+        const message = e instanceof Error ? e.message : "Failed to load recipe";
+        setError(message);
         setRecipe(null);
       })
       .finally(() => {
@@ -178,22 +210,27 @@ const Recipe = () => {
                 <h2 className={styles.sectionTitle}>Ingredients</h2>
 
                 <ul className={styles.ingredientsGrid}>
-                  {recipe.ingredients.map((ing) => (
-                    <li key={ing.id} className={styles.ingredientItem}>
-                      <div className={styles.ingredientIcon}>
-                        <Image
-                          src={ing.imageUrl}
-                          alt={ing.name}
-                          className={styles.ingredientImage}
-                        />
-                      </div>
+                  {recipe.ingredients.map((ing) => {
+                    const full = ingredientsById[ing.name || ing.id];
 
-                      <div className={styles.ingredientMeta}>
-                        <span className={styles.ingredientName}>{ing.name}</span>
-                        <span className={styles.ingredientMeasure}>{ing.measure ?? ""}</span>
-                      </div>
-                    </li>
-                  ))}
+
+                    const name = full?.name ?? ing.name;
+                    const imageUrl = full?.img ?? ing.imageUrl;
+                    const measure = ing.measure ?? full?.measure ?? "";
+
+                    return (
+                      <li key={ing.id} className={styles.ingredientItem}>
+                        <div className={styles.ingredientIcon}>
+                          <Image src={imageUrl} alt={name} className={styles.ingredientImage} />
+                        </div>
+
+                        <div className={styles.ingredientMeta}>
+                          <span className={styles.ingredientName}>{name}</span>
+                          <span className={styles.ingredientMeasure}>{measure}</span>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 <h2 className={styles.sectionTitle}>Recipe Preparation</h2>
@@ -236,11 +273,7 @@ const Recipe = () => {
                   }}
                 >
                   <div className={styles.popularImageWrap}>
-                    <Image
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className={styles.popularImage}
-                    />
+                    <Image src={item.imageUrl} alt={item.title} className={styles.popularImage} />
                   </div>
 
                   <div className={styles.popularText}>
@@ -251,7 +284,10 @@ const Recipe = () => {
                   <div className={styles.popularFooter}>
                     <div className={styles.popularAuthor}>
                       <div className={styles.popularAvatar}>
-                        <Avatar src={item.author?.avatarUrl ?? undefined} alt={item.author?.name ?? "User"} />
+                        <Avatar
+                          src={item.author?.avatarUrl ?? undefined}
+                          alt={item.author?.name ?? "User"}
+                        />
                       </div>
                       <span className={styles.popularAuthorName}>{item.author?.name ?? ""}</span>
                     </div>
