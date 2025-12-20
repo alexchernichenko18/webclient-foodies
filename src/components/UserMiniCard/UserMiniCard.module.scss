@@ -1,0 +1,49 @@
+@import "../../styles/variables";
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+  color: $color-black;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.follow,
+.following {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  white-space: nowrap;
+}
+
+.follow {
+  background-color: $color-black;
+  color: $color-white;
+}
+
+.following {
+  background-color: transparent;
+  color: $color-black;
+  border: 1px solid $color-black;
+}

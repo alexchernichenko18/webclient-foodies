@@ -1,0 +1,82 @@
+@import "../../../../styles/variables";
+
+.container {
+  width: 100%;
+  margin-bottom: 64px;
+}
+
+.content {
+  margin-bottom: 30px;
+}
+
+.message {
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: $color-black;
+  margin-top: 80px;
+  padding-bottom: 100px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+@media (min-width: 768px) {
+  .container {
+    margin-bottom: 100px;
+    margin-top: 24px;
+  }
+
+  .content {
+    margin-bottom: 60px;
+  }
+
+  .message {
+    font-size: 16px;
+    line-height: 24px;
+    margin-top: 100px;
+    padding-bottom: 200px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .container {
+    margin-top: 0;
+    margin-bottom: 120px;
+  }
+
+  .message {
+    font-size: 16px;
+    line-height: 24px;
+    margin-top: 140px;
+  }
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.pageBtn {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: white;
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.pageBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageInfo {
+  font-size: 14px;
+  font-weight: 700;
+}
