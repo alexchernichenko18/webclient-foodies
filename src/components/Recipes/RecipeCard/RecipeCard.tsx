@@ -6,7 +6,6 @@ import {
   type Recipe,
 } from "../../../api/recipes";
 import { RootState } from "../../../store";
-import noImage from "../../../assets/recipes/no-image.png";
 import styles from "./RecipeCard.module.scss";
 import Button from "../../ui/Button";
 import { ReactComponent as IconArrowUp } from "../../../assets/icons/icon-arrow-up.svg";
@@ -25,20 +24,9 @@ const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
   const [favorite, setFavorite] = useState(isFavorite);
   const [favPending, setFavPending] = useState(false);
 
-  const [imageSrc, setImageSrc] = useState<string>(noImage);
-
   useEffect(() => {
     setFavorite(isFavorite);
   }, [isFavorite]);
-
-  useEffect(() => {
-    const img = recipe.img ?? null;
-    if (!img) {
-      setImageSrc(noImage);
-      return;
-    }
-    setImageSrc(img.startsWith("http") ? img : `${process.env.REACT_APP_BASE_URL}${img}`);
-  }, [recipe.img]);
 
   async function handleFavoriteClick() {
     if (!isAuthenticated || favPending) return;
@@ -64,7 +52,7 @@ const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
   return (
     <div className={styles.card}>
       <Image
-        src={imageSrc}
+        src={recipe.img}
         className={styles.image}
         alt={recipe.name}
       />

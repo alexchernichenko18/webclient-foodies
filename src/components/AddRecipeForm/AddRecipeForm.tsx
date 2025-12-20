@@ -93,7 +93,8 @@ const AddRecipeForm = () => {
           })),
         );
 
-        setIngredientsOptions(ingRes.data);
+        const ingredientsData = ingRes.data.filter((i: any) => Boolean(i.description));
+        setIngredientsOptions(ingredientsData);
       } catch {
         iziToast.error({
           title: "Error",
