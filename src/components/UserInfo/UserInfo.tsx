@@ -45,7 +45,7 @@ export default function UserInfo() {
         <div className={styles.header}>
           <div className={styles.avatarContainer}>
             <div className={styles.avatarBox}>
-              <Avatar src={user?.avatar ? process.env.REACT_APP_BASE_URL_API! + user.avatar : undefined} alt={user?.name ?? "User Avatar"} />
+              <Avatar src={user?.avatar} alt={user?.name ?? "User Avatar"} />
             </div>
             {
               <>

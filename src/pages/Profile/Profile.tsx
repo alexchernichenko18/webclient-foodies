@@ -3,11 +3,11 @@ import styles from './Profile.module.scss';
 import userInfoStyles from '../../components/UserInfo/UserInfo.module.scss';
 import Button from '../../components/ui/Button/Button';
 import { User } from '../../api/userApi';
+import Avatar from '../../components/Avatar';
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState<'recipes' | 'followers'>('recipes');
 
-  // --- FOR TESTING (Mock data) ---
   const [user] = useState<Partial<User> | null>({
     name: "Nadia",
     email: "nadia28682@gmai.com",
@@ -39,16 +39,6 @@ const Profile = () => {
 
   if (!user) return null;
 
-  const avatar = user.avatar ? (
-    <img
-      src={process.env.REACT_APP_BASE_URL_API + user.avatar}
-      alt="Avatar"
-      className={userInfoStyles.avatar}
-    />
-  ) : (
-    <div className={userInfoStyles.defaultAvatar}>{user.name?.charAt(0)}</div>
-  );
-
   return (
     <section className={`f-container ${styles.page}`}>
       <header className={styles.header}>
@@ -63,7 +53,9 @@ const Profile = () => {
           <div className={userInfoStyles.card}>
             <div className={userInfoStyles.header}>
               <div className={userInfoStyles.avatarContainer}>
-                <div className={userInfoStyles.avatarBox}>{avatar}</div>
+                <div className={userInfoStyles.avatarBox}>
+                  <Avatar src={user.avatar} alt={user.name ?? "User Avatar"} />
+                </div>
               </div>
               <p className={userInfoStyles.name}>{user.name}</p>
             </div>
