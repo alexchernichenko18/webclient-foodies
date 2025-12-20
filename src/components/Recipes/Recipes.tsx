@@ -11,9 +11,10 @@ interface RecipesProps {
   onBack: () => void;
   categoryName: string | null;
   onFilterChange: (selectedId: string, filterType: "ingredients" | "areas") => void;
+  onFavoriteChange?: (recipeId: string, isFavorite: boolean) => void;
 }
 
-const Recipes = ({ recipes, loading, onBack, categoryName, onFilterChange }: RecipesProps) => {
+const Recipes = ({ recipes, loading, onBack, categoryName, onFilterChange, onFavoriteChange }: RecipesProps) => {
   return (
     <section className={styles.recipes}>
       <div className={styles.container}>
@@ -41,7 +42,7 @@ const Recipes = ({ recipes, loading, onBack, categoryName, onFilterChange }: Rec
               <p className={styles.loading}>Loading recipes...</p>
             ) : (
               <>
-                <RecipesList recipes={recipes} />
+                <RecipesList recipes={recipes} onFavoriteChange={onFavoriteChange} />
 
                 {/* Пагінація */}
                 <div className={styles.pagination}>

@@ -8,14 +8,15 @@ interface IAvatarProps {
 }
 
 const Avatar = ({ src, alt = "Avatar" }: IAvatarProps) => {
-  const [imgSrc, setImgSrc] = useState('');
+  const [imgSrc, setImgSrc] = useState(noAvatar);
 
   useEffect(() => {
     if (src) {
       if (src.startsWith("http")) {
         setImgSrc(src);
       } else {
-        setImgSrc(`${process.env.REACT_APP_BASE_URL_API}${src}`);
+        const baseURL = process.env.REACT_APP_BASE_URL_API || "";
+        setImgSrc(baseURL ? `${baseURL}${src}` : src);
       }
       return;
     }
@@ -23,14 +24,7 @@ const Avatar = ({ src, alt = "Avatar" }: IAvatarProps) => {
     setImgSrc(noAvatar);
   }, [src]);
 
-  return (
-    <img
-      src={imgSrc}
-      alt={alt}
-      className={styles.avatar}
-      onError={() => setImgSrc(noAvatar)}
-    />
-  );
+  return <img src={imgSrc || noAvatar} alt={alt} className={styles.avatar} onError={() => setImgSrc(noAvatar)} />;
 };
 
 export default Avatar;

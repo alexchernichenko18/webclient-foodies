@@ -1,10 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
-import {
-  addRecipeToFavorites,
-  removeRecipeFromFavorites,
-  type Recipe,
-} from "../../../api/recipes";
+import { addRecipeToFavorites, removeRecipeFromFavorites, type Recipe } from "../../../api/recipes";
 import { RootState } from "../../../store";
 import styles from "./RecipeCard.module.scss";
 import Button from "../../ui/Button";
@@ -16,30 +12,60 @@ import Image from "../../Image";
 interface RecipeCardProps {
   recipe: Recipe;
   isFavorite?: boolean;
+  onFavoriteChange?: (recipeId: string, isFavorite: boolean) => void;
 }
 
-const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
+const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCardProps) => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-  const [favorite, setFavorite] = useState(isFavorite);
+  // Використовуємо recipe.isFavorite якщо воно є, інакше isFavorite проп
+  const favoriteFromProps = recipe.isFavorite ?? isFavorite ?? false;
+  // Локальний стейт для оптимістичного оновлення (миттєва зміна UI)
+  const [favorite, setFavorite] = useState(favoriteFromProps);
   const [favPending, setFavPending] = useState(false);
+  // Відстежуємо, чи ми оновлюємо favorite через клік (щоб useEffect не перезаписував)
+  const isUpdatingFromClick = useRef(false);
 
   useEffect(() => {
-    setFavorite(isFavorite);
-  }, [isFavorite]);
+    if (!isUpdatingFromClick.current) {
+      setFavorite(favoriteFromProps);
+    }
+  }, [favoriteFromProps]);
+
+  const [imageSrc, setImageSrc] = useState<string>(noImage);
 
   async function handleFavoriteClick() {
     if (!isAuthenticated || favPending) return;
 
+    // Зберігаємо попереднє значення на випадок помилки
+    const previousFavorite = favorite;
+    // Оптимістичне оновлення - одразу змінюємо UI
+    const optimisticFavorite = !favorite;
+    isUpdatingFromClick.current = true; // Позначаємо, що ми оновлюємо через клік
+    setFavorite(optimisticFavorite); // Синхронне оновлення для миттєвої зміни UI
+
     try {
       setFavPending(true);
 
-      const nextIsFavorite = favorite
-        ? await removeRecipeFromFavorites(recipe.id)
-        : await addRecipeToFavorites(recipe.id);
+      const nextIsFavorite = previousFavorite ? await removeRecipeFromFavorites(recipe.id) : await addRecipeToFavorites(recipe.id);
 
+      // Оновлюємо локальний стейт з результатом API (на випадок якщо API поверне інше значення)
       setFavorite(nextIsFavorite);
+
+      // Синхронізуємо стан з батьківським компонентом
+      if (onFavoriteChange) {
+        onFavoriteChange(recipe.id, nextIsFavorite);
+      }
+
+      // Після синхронізації дозволяємо useEffect оновлювати з пропів
+      // Використовуємо setTimeout, щоб дати час React оновити пропи
+      setTimeout(() => {
+        isUpdatingFromClick.current = false;
+      }, 200);
     } catch (e: unknown) {
+      // При помилці повертаємо попереднє значення
+      setFavorite(previousFavorite);
+      isUpdatingFromClick.current = false;
       const message = e instanceof Error ? e.message : "Failed to update favorites";
       alert(message);
     } finally {
@@ -69,14 +95,7 @@ const RecipeCard = ({ recipe, isFavorite = false }: RecipeCardProps) => {
         </div>
 
         <div className={styles.buttons}>
-          {isAuthenticated && (
-            <Button
-              onClick={handleFavoriteClick}
-              variant={favorite ? "dark" : "light"}
-              icon={<IconHeart />}
-              disabled={favPending}
-            />
-          )}
+          {isAuthenticated && <Button key={`favorite-${recipe.id}-${favorite}`} onClick={handleFavoriteClick} variant={favorite ? "dark" : "light"} icon={<IconHeart />} disabled={favPending} />}
 
           <Button href={`/recipe/${recipe.id}`} variant="light" icon={<IconArrowUp />} />
         </div>

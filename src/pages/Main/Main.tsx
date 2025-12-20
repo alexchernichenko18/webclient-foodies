@@ -6,7 +6,6 @@ import { RootState } from "../../store";
 import { getRecipes, type Recipe } from "../../api/recipes";
 import styles from "./Main.module.scss";
 
-
 const Main = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [selectedCategoryName, setSelectedCategoryName] = useState<string | null>(null);
@@ -22,7 +21,7 @@ const Main = () => {
   const loadRecipes = async (categoryId: string | null, ingredientId?: string, areaId?: string) => {
     try {
       setLoading(true);
-      
+
       const response = await getRecipes({
         categoryId: categoryId,
         ingredientName: ingredientId || undefined,
@@ -33,6 +32,10 @@ const Main = () => {
 
       setRecipes(response.recipes);
       console.log("Recipes loaded:", response);
+      // Діагностика: перевіряємо чи є isFavorite в рецептах
+      response.recipes.forEach((recipe, index) => {
+        console.log(`Recipe ${index} (${recipe.name}): isFavorite =`, recipe.isFavorite);
+      });
     } catch (error) {
       alert("Failed to load recipes. Please try again.");
       console.error("Error loading recipes:", error);
@@ -61,14 +64,14 @@ const Main = () => {
 
   const handleFilterChange = (selectedId: string, filterType: "ingredients" | "areas") => {
     console.log(`Filter changed - Type: ${filterType}, ID: ${selectedId}`);
-    
+
     const newFilters = {
       ...filters,
       [filterType === "ingredients" ? "ingredientId" : "areaId"]: selectedId,
     };
-    
+
     setFilters(newFilters);
-    
+
     // Перезавантажуємо рецепти з новими фільтрами
     loadRecipes(selectedCategoryId, newFilters.ingredientId, newFilters.areaId);
   };
@@ -81,17 +84,17 @@ const Main = () => {
     setFilters({ ingredientId: "", areaId: "" });
   };
 
+  const handleFavoriteChange = (recipeId: string, isFavorite: boolean) => {
+    // Оновлюємо локальний стейт для синхронізації
+    // API вже оновив стан на сервері, тому просто синхронізуємо локальний стейт
+    setRecipes((prevRecipes) => prevRecipes.map((recipe) => (recipe.id === recipeId ? { ...recipe, isFavorite } : recipe)));
+  };
+
   return (
     <div className={styles.wrap}>
       {!showRecipes && <Categories onCategoryClick={handleCategoryClick} />}
       {showRecipes && (
-        <Recipes
-          recipes={recipes}
-          loading={loading}
-          onBack={handleBackClick}
-          categoryName={selectedCategoryName}
-          onFilterChange={handleFilterChange}
-        />
+        <Recipes recipes={recipes} loading={loading} onBack={handleBackClick} categoryName={selectedCategoryName} onFilterChange={handleFilterChange} onFavoriteChange={handleFavoriteChange} />
       )}
     </div>
   );

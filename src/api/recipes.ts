@@ -1,6 +1,5 @@
 import api from "./client";
 
-
 export type ApiAuthor = {
   id: string;
   name: string;
@@ -46,6 +45,7 @@ export type Recipe = {
   instructions: string;
   time: number;
   img: string | null;
+  isFavorite?: boolean;
   category?: {
     id: string;
     name: string;
@@ -86,9 +86,7 @@ export async function getRecipeById(recipeId: string): Promise<RecipeDetails> {
   return data;
 }
 
-export async function getRecipes(
-  filters: RecipeFilters = {}
-): Promise<RecipesResponse> {
+export async function getRecipes(filters: RecipeFilters = {}): Promise<RecipesResponse> {
   const { data } = await api.get<RecipesResponse>("/recipes", {
     params: {
       categoryId: filters.categoryId || undefined,
@@ -103,18 +101,12 @@ export async function getRecipes(
 }
 
 export async function addRecipeToFavorites(recipeId: string): Promise<boolean> {
-  const { data } = await api.post<{ isFavorite: boolean }>(
-    `/recipes/${recipeId}/favorite`,
-  );
+  const { data } = await api.post<{ isFavorite: boolean }>(`/recipes/${recipeId}/favorite`);
   return data.isFavorite;
 }
 
-export async function removeRecipeFromFavorites(
-  recipeId: string,
-): Promise<boolean> {
-  const { data } = await api.delete<{ isFavorite: boolean }>(
-    `/recipes/${recipeId}/favorite`,
-  );
+export async function removeRecipeFromFavorites(recipeId: string): Promise<boolean> {
+  const { data } = await api.delete<{ isFavorite: boolean }>(`/recipes/${recipeId}/favorite`);
   return data.isFavorite;
 }
 
