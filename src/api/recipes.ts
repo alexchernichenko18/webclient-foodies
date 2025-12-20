@@ -55,6 +55,12 @@ export type Recipe = {
     name: string;
   };
   ingredients?: RecipeIngredientDTO[];
+  owner?: {
+    id: string;
+    avatar: string | null;
+    name: string;
+  };
+  isFavorite: boolean;
 };
 
 export type RecipeFilters = {
@@ -117,7 +123,7 @@ export type CreateRecipePayload = {
   time: number;
   categoryId: string;
   areaId: string;
-  ingredients: string[];
+  ingredientIds: string[];
   img: File | null;
 };
 
@@ -135,7 +141,7 @@ export async function createRecipe(payload: CreateRecipePayload): Promise<Create
   formData.append("categoryId", payload.categoryId);
   formData.append("areaId", payload.areaId);
 
-  payload.ingredients.forEach((ing) => formData.append("ingredients", ing));
+  payload.ingredientIds.forEach((ing) => formData.append("ingredientIds", ing));
 
   if (payload.img) {
     formData.append("img", payload.img);

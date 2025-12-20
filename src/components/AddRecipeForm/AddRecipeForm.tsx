@@ -49,6 +49,7 @@ const AddRecipeForm = () => {
     validateOnChange: false,
     onSubmit: async (values) => {
       try {
+        console.log('values.ingredients', values.ingredients);
         const created = await createRecipe({
           name: values.name,
           description: values.description,
@@ -56,7 +57,7 @@ const AddRecipeForm = () => {
           time: values.time,
           categoryId: values.categoryId,
           areaId: values.areaId,
-          ingredients: values.ingredients,
+          ingredientIds: values.ingredients,
           img: values.img,
         });
 
