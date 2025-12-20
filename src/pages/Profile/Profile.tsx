@@ -87,19 +87,44 @@ const Profile = () => {
             <ul className={userInfoStyles.stats}>
               <li>
                 <p className={userInfoStyles.textProfile}>
-                  Email:<span className={userInfoStyles.textValueProfile}>{user.email}</span>
+                  Email:
+                  <span className={userInfoStyles.textValueProfile}>{user.email}</span>
                 </p>
               </li>
+
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Added recipes:
-                  <span className={userInfoStyles.textValueProfile}>{(user as unknown as { recipesAmount?: number }).recipesAmount ?? 0}</span>
+                  <span className={userInfoStyles.textValueProfile}>
+                    {(user as unknown as { recipesAmount?: number }).recipesAmount ?? 0}
+                  </span>
                 </p>
               </li>
+
+              <li>
+                <p className={userInfoStyles.textProfile}>
+                  Favorites:
+                  <span className={userInfoStyles.textValueProfile}>
+                    {(user as unknown as { favoritesAmount?: number }).favoritesAmount ?? 0}
+                  </span>
+                </p>
+              </li>
+
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Followers:
-                  <span className={userInfoStyles.textValueProfile}>{(user as unknown as { followersAmount?: number }).followersAmount ?? 0}</span>
+                  <span className={userInfoStyles.textValueProfile}>
+                    {(user as unknown as { followersAmount?: number }).followersAmount ?? 0}
+                  </span>
+                </p>
+              </li>
+
+              <li>
+                <p className={userInfoStyles.textProfile}>
+                  Following:
+                  <span className={userInfoStyles.textValueProfile}>
+                    {(user as unknown as { followingAmount?: number }).followingAmount ?? 0}
+                  </span>
                 </p>
               </li>
             </ul>
