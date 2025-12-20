@@ -60,7 +60,6 @@ export type Recipe = {
     avatar: string | null;
     name: string;
   };
-  isFavorite: boolean;
 };
 
 export type RecipeFilters = {

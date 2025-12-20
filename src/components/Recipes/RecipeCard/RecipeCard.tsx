@@ -32,8 +32,6 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
     }
   }, [favoriteFromProps]);
 
-  const [imageSrc, setImageSrc] = useState<string>(noImage);
-
   async function handleFavoriteClick() {
     if (!isAuthenticated || favPending) return;
 
