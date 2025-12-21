@@ -1,7 +1,6 @@
 @import "../../../styles/variables";
 
 .subtitle {
-  max-width: 50%;
   font-weight: 500;
   font-size: 14px;
   line-height: 1.5;
@@ -14,5 +13,6 @@
 
   @media (min-width: 1440px) {
     font-size: 18px;
+    max-width: 50%;
   }
 }
