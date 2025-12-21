@@ -1,5 +1,6 @@
 import styles from "./RecipeMiniCard.module.scss";
 import type { RecipeListItem } from "../../api/recipes";
+import Image from "../Image";
 
 interface RecipeMiniCardProps {
   recipe: RecipeListItem;
@@ -10,11 +11,10 @@ const RecipeMiniCard = ({ recipe, onToggleFavorite }: RecipeMiniCardProps) => {
   return (
     <article className={styles.card}>
       <div className={styles.thumbWrap}>
-        <img
+        <Image
           className={styles.thumb}
           src={recipe.imageUrl || "/images/recipe-placeholder.jpg"}
           alt={recipe.title}
-          loading="lazy"
         />
       </div>
 

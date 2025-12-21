@@ -1,3 +1,4 @@
+import Image from "../Image";
 import styles from "./UserMiniCard.module.scss";
 
 export interface UserMiniCardProps {
@@ -19,11 +20,10 @@ const UserMiniCard = ({
 }: UserMiniCardProps) => {
   return (
     <div className={styles.card}>
-      <img
+      <Image
         className={styles.avatar}
         src={avatar || "/images/avatar-placeholder.png"}
         alt={name}
-        loading="lazy"
       />
 
       <span className={styles.name}>{name}</span>
