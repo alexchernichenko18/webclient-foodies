@@ -6,13 +6,13 @@ import Button from "../../components/ui/Button/Button";
 import Avatar from "../../components/Avatar";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { userApi, type User } from "../../api/userApi";
+import TabContent from "../MyProfile/components/TabContent";
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const userId = useMemo(() => id?.trim() ?? "", [id]);
 
-  const [activeTab, setActiveTab] = useState<"recipes" | "followers">("recipes");
   const [user, setUser] = useState<User | null>(null);
   const [loadingUser, setLoadingUser] = useState(false);
   const [userError, setUserError] = useState<string | null>(null);
@@ -96,6 +96,7 @@ const Profile = () => {
                   <span className={userInfoStyles.textValueProfile}>{user.email}</span>
                 </p>
               </li>
+
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Added recipes:
@@ -104,6 +105,7 @@ const Profile = () => {
                   </span>
                 </p>
               </li>
+
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Favorites:
@@ -112,6 +114,7 @@ const Profile = () => {
                   </span>
                 </p>
               </li>
+
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Followers:
@@ -120,6 +123,7 @@ const Profile = () => {
                   </span>
                 </p>
               </li>
+
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Following:
@@ -137,51 +141,7 @@ const Profile = () => {
         </div>
 
         <main className={styles.main}>
-          <div
-            style={{
-              display: "flex",
-              gap: "20px",
-              marginBottom: "24px",
-              borderBottom: "1px solid #e0e0e0",
-            }}
-          >
-            <button
-              onClick={() => setActiveTab("recipes")}
-              style={{
-                padding: "10px 0",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontWeight: 700,
-                borderBottom: activeTab === "recipes" ? "2px solid black" : "none",
-              }}
-            >
-              RECIPES
-            </button>
-            <button
-              onClick={() => setActiveTab("followers")}
-              style={{
-                padding: "10px 0",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontWeight: 700,
-                borderBottom: activeTab === "followers" ? "2px solid black" : "none",
-              }}
-            >
-              FOLLOWERS
-            </button>
-          </div>
-
-          <div className={styles.tabContent}>
-            {activeTab === "recipes" ? (
-              <div className={styles.recipesGrid}>
-                <p>No recipes yet.</p>
-              </div>
-            ) : (
-              <div className={styles.followersList} />
-            )}
-          </div>
+          <TabContent mode="user" userId={user.id} />
         </main>
       </div>
     </section>

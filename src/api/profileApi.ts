@@ -1,23 +1,43 @@
-import { userApi, User } from "./userApi";
-
+import api from "./client";
+import type { User } from "./userApi";
+import type { Recipe } from "./recipes";
 
 export const profileApi = {
   getMyFollowers: async (): Promise<User[]> => {
-    await userApi.getCurrentUserInfo();
-
-    return [
-      { id: "1", name: "John Doe", email: "john@example.com", avatar: "", isSubscribed: true },
-      { id: "2", name: "Anna Smith", email: "anna@example.com", avatar: "", isSubscribed: true },
-      { id: "3", name: "Mike Johnson", email: "mike@example.com", avatar: "", isSubscribed: false },
-    ];
+    const { data } = await api.get<User[]>("/users/me/followers");
+    return data;
   },
 
   getMyFollowing: async (): Promise<User[]> => {
-    await userApi.getCurrentUserInfo();
+    const { data } = await api.get<User[]>("/users/me/following");
+    return data;
+  },
 
-    return [
-      { id: "10", name: "Chef Maria", email: "maria@example.com", avatar: "", isSubscribed: true },
-      { id: "11", name: "Food Hunter", email: "hunter@example.com", avatar: "", isSubscribed: true },
-    ];
+  getMyRecipes: async (): Promise<Recipe[]> => {
+    const { data } = await api.get<Recipe[]>("/recipes/me");
+    return data;
+  },
+
+  getMyFavorites: async (): Promise<Recipe[]> => {
+    const { data } = await api.get<Recipe[]>("/recipes/favorites");
+    return data;
+  },
+
+  followUser: async (userId: string): Promise<void> => {
+    await api.post(`/users/${userId}/follow`);
+  },
+
+  unfollowUser: async (userId: string): Promise<void> => {
+    await api.delete(`/users/${userId}/follow`);
+  },
+
+  getUserFollowers: async (userId: string): Promise<User[]> => {
+    const { data } = await api.get<User[]>(`/users/${userId}/followers`);
+    return data;
+  },
+
+  getUserRecipes: async (userId: string): Promise<Recipe[]> => {
+    const { data } = await api.get<Recipe[]>(`/recipes/user/${userId}`);
+    return data;
   },
 };

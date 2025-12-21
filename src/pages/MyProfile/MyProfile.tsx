@@ -26,7 +26,7 @@ const MyProfile = () => {
         <UserInfo />
 
         <main className={styles.main}>
-          <TabContent />
+          <TabContent mode="my" />
         </main>
       </div>
     </section>
