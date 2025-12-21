@@ -47,3 +47,10 @@
   color: $color-gray;
   font-weight: 700;
 }
+
+@media (max-width: 1023px) {
+  .list {
+ padding-left: 15px;
+}
+
+}

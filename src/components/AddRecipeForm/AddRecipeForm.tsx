@@ -20,7 +20,6 @@ import type { SelectOption } from "../../components/AddRecipeForm/types";
 import classNames from "classnames";
 import { createRecipe } from "../../api/recipes";
 
-// Додаємо тип IngredientOption
 type IngredientOption = {
   id: string;
   name: string;
@@ -104,7 +103,7 @@ const AddRecipeForm = () => {
           ingredientsData.map((i: any) => ({
             id: i.id,
             name: i.name,
-            img: i.img, // картинка
+            img: i.img,
           }))
         );
       } catch {

@@ -332,10 +332,21 @@
     font-size: 18px;
     margin-bottom: 12px;
   }
+  .title {
+  margin: 0 0 10px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: #111;
+}
+
+
 }
 
 /* Mobile */
 @media (max-width: 767px) {
+
+
   .form {
     padding: 16px;
     gap: 20px;
@@ -444,11 +455,31 @@
 
 /* Small mobile */
 @media (max-width: 360px) {
+
+
   .imageDropzone {
     height: 200px;
   }
 
   .publishBtn {
     width: 128px;
+  }
+}
+
+/* === INGREDIENT CHIP FIX === */
+@media (max-width: 1023px) {
+  .ingredientChip {
+    align-items: flex-start;
+  }
+
+  .ingredientMeta {
+    position: relative;
+    padding-right: 24px;
+  }
+
+  .removeChip {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }
