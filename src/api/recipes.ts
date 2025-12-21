@@ -6,7 +6,7 @@ export type ApiAuthor = {
   avatarUrl: string | null;
 };
 
-export type PopularRecipe = {
+export type RecipeListItem = {
   id: string;
   title: string;
   description: string;
@@ -16,6 +16,8 @@ export type PopularRecipe = {
   favoritesCount: number;
   isFavorite: boolean;
 };
+
+export type PopularRecipe = RecipeListItem;
 
 export type RecipeIngredientDTO = {
   id: string;
@@ -38,52 +40,50 @@ export type RecipeDetails = {
   isFavorite: boolean;
 };
 
-export type Recipe = {
-  id: string;
-  name: string;
-  description: string;
-  instructions: string;
-  time: number;
-  img: string | null;
-  isFavorite?: boolean;
-  category?: {
-    id: string;
-    name: string;
-  };
-  area?: {
-    id: string;
-    name: string;
-  };
-  ingredients?: RecipeIngredientDTO[];
-  owner?: {
-    id: string;
-    avatar: string | null;
-    name: string;
-  };
-};
-
-export type RecipeFilters = {
-  categoryId?: string | null;
-  areaId?: string | null;
-  ingredientName?: string | null;
-  ownerId?: string | null;
+type ListResponse<T> = {
+  items: T[];
+  total?: number;
+  totalPages?: number;
   page?: number;
   limit?: number;
 };
 
-export type RecipesResponse = {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  recipes: Recipe[];
-};
+function normalizeListResponse<T>(data: any): ListResponse<T> {
+  if (!data) return { items: [] };
+
+  if (Array.isArray(data.items)) return data as ListResponse<T>;
+
+  if (data.data) {
+    if (Array.isArray(data.data.items)) return data.data as ListResponse<T>;
+    if (Array.isArray(data.data)) return { items: data.data as T[] };
+  }
+
+  if (Array.isArray(data)) return { items: data as T[] };
+
+  return { items: [] };
+}
 
 export async function getPopularRecipes(limit = 4): Promise<PopularRecipe[]> {
   const { data } = await api.get<{ items: PopularRecipe[] }>("/recipes/popular", {
     params: { limit },
   });
   return data.items;
+}
+
+export async function getOwnRecipes(params?: {
+  page?: number;
+  limit?: number;
+}): Promise<ListResponse<RecipeListItem>> {
+  const { data } = await api.get("/recipes/own", { params });
+  return normalizeListResponse<RecipeListItem>(data);
+}
+
+export async function getFavoriteRecipes(params?: {
+  page?: number;
+  limit?: number;
+}): Promise<ListResponse<RecipeListItem>> {
+  const { data } = await api.get("/recipes/favorites", { params });
+  return normalizeListResponse<RecipeListItem>(data);
 }
 
 export async function getRecipeById(recipeId: string): Promise<RecipeDetails> {
