@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Profile.module.scss";
 import userInfoStyles from "../../components/UserInfo/UserInfo.module.scss";
@@ -6,6 +6,7 @@ import Button from "../../components/ui/Button/Button";
 import Avatar from "../../components/Avatar";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import { userApi, type User } from "../../api/userApi";
+import { profileApi } from "../../api/profileApi";
 import TabContent from "../MyProfile/components/TabContent";
 
 const Profile = () => {
@@ -16,6 +17,8 @@ const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loadingUser, setLoadingUser] = useState(false);
   const [userError, setUserError] = useState<string | null>(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isFollowLoading, setIsFollowLoading] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -27,9 +30,10 @@ const Profile = () => {
         setLoadingUser(true);
         setUserError(null);
 
-        const [currentRes, profileRes] = await Promise.all([
+        const [currentRes, profileRes, followingList] = await Promise.all([
           userApi.getCurrentUserInfo(),
           userApi.getUserById(userId),
+          profileApi.getMyFollowing(),
         ]);
 
         if (!isActive) return;
@@ -40,6 +44,7 @@ const Profile = () => {
         }
 
         setUser(profileRes.data);
+        setIsFollowing(followingList.some((u) => u.id === userId));
       } catch (e: unknown) {
         if (!isActive) return;
         const message = e instanceof Error ? e.message : "Failed to load user";
@@ -57,6 +62,31 @@ const Profile = () => {
       isActive = false;
     };
   }, [userId, navigate]);
+
+  const handleFollowToggle = useCallback(async () => {
+    if (!user || isFollowLoading) return;
+
+    setIsFollowLoading(true);
+    try {
+      if (isFollowing) {
+        await profileApi.unfollowUser(user.id);
+        setIsFollowing(false);
+        setUser((prev) =>
+          prev ? { ...prev, followersAmount: Math.max(0, (prev.followersAmount ?? 1) - 1) } : prev
+        );
+      } else {
+        await profileApi.followUser(user.id);
+        setIsFollowing(true);
+        setUser((prev) =>
+          prev ? { ...prev, followersAmount: (prev.followersAmount ?? 0) + 1 } : prev
+        );
+      }
+    } catch (e) {
+      console.error("Failed to toggle follow:", e);
+    } finally {
+      setIsFollowLoading(false);
+    }
+  }, [user, isFollowing, isFollowLoading]);
 
   if (!userId || loadingUser || userError || !user) return null;
 
@@ -101,7 +131,7 @@ const Profile = () => {
                 <p className={userInfoStyles.textProfile}>
                   Added recipes:
                   <span className={userInfoStyles.textValueProfile}>
-                    {(user as unknown as { recipesAmount?: number }).recipesAmount ?? 0}
+                    {user.recipesAmount ?? 0}
                   </span>
                 </p>
               </li>
@@ -110,7 +140,7 @@ const Profile = () => {
                 <p className={userInfoStyles.textProfile}>
                   Favorites:
                   <span className={userInfoStyles.textValueProfile}>
-                    {(user as unknown as { favoritesAmount?: number }).favoritesAmount ?? 0}
+                    {user.favoriteRecipesAmount ?? 0}
                   </span>
                 </p>
               </li>
@@ -119,7 +149,7 @@ const Profile = () => {
                 <p className={userInfoStyles.textProfile}>
                   Followers:
                   <span className={userInfoStyles.textValueProfile}>
-                    {(user as unknown as { followersAmount?: number }).followersAmount ?? 0}
+                    {user.followersAmount ?? 0}
                   </span>
                 </p>
               </li>
@@ -128,15 +158,20 @@ const Profile = () => {
                 <p className={userInfoStyles.textProfile}>
                   Following:
                   <span className={userInfoStyles.textValueProfile}>
-                    {(user as unknown as { followingAmount?: number }).followingAmount ?? 0}
+                    {user.followingsAmount ?? 0}
                   </span>
                 </p>
               </li>
             </ul>
           </div>
 
-          <Button variant="dark" expanded onClick={() => console.log("Followed!")}>
-            FOLLOW
+          <Button
+            variant={isFollowing ? "outlined-dark" : "dark"}
+            expanded
+            onClick={handleFollowToggle}
+            disabled={isFollowLoading}
+          >
+            {isFollowLoading ? "..." : isFollowing ? "UNFOLLOW" : "FOLLOW"}
           </Button>
         </div>
 

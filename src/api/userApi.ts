@@ -5,8 +5,11 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
-  isSubscribed: boolean;
-  [key: string]: any;
+  recipesAmount?: number;
+  favoriteRecipesAmount?: number;
+  followersAmount?: number;
+  followingsAmount?: number;
+  isFollowing?: boolean;
 }
 
 export const userApi = {

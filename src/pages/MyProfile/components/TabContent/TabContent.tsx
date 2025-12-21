@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import styles from "./TabContent.module.scss";
 import TabMenu, { type TabMenuItem } from "../../../../components/ui/TabMenu";
 
@@ -20,6 +20,7 @@ const TabContent = (props: Props) => {
 
   const [followers, setFollowers] = useState<User[]>([]);
   const [following, setFollowing] = useState<User[]>([]);
+  const [myFollowingIds, setMyFollowingIds] = useState<Set<string>>(new Set());
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [favorites, setFavorites] = useState<Recipe[]>([]);
 
@@ -80,13 +81,22 @@ const TabContent = (props: Props) => {
               return;
             }
             case "followers": {
-              const list = await profileApi.getMyFollowers();
-              if (isActive) setFollowers(list);
+              const [followersList, followingList] = await Promise.all([
+                profileApi.getMyFollowers(),
+                profileApi.getMyFollowing(),
+              ]);
+              if (isActive) {
+                setFollowers(followersList);
+                setMyFollowingIds(new Set(followingList.map((u) => u.id)));
+              }
               return;
             }
             case "following": {
               const list = await profileApi.getMyFollowing();
-              if (isActive) setFollowing(list);
+              if (isActive) {
+                setFollowing(list);
+                setMyFollowingIds(new Set(list.map((u) => u.id)));
+              }
               return;
             }
           }
@@ -101,8 +111,14 @@ const TabContent = (props: Props) => {
             return;
           }
           case "followers": {
-            const list = await profileApi.getUserFollowers(userId);
-            if (isActive) setFollowers(list);
+            const [followersList, followingList] = await Promise.all([
+              profileApi.getUserFollowers(userId),
+              profileApi.getMyFollowing(),
+            ]);
+            if (isActive) {
+              setFollowers(followersList);
+              setMyFollowingIds(new Set(followingList.map((u) => u.id)));
+            }
             return;
           }
           default:
@@ -125,11 +141,43 @@ const TabContent = (props: Props) => {
     };
   }, [activeTab, props]);
 
+  const handleFollow = useCallback(async (userId: string) => {
+    try {
+      await profileApi.followUser(userId);
+      setMyFollowingIds((prev) => new Set(Array.from(prev).concat(userId)));
+    } catch (e) {
+      console.error("Failed to follow user:", e);
+    }
+  }, []);
+
+  const handleUnfollow = useCallback(async (userId: string) => {
+    try {
+      await profileApi.unfollowUser(userId);
+      setMyFollowingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(userId);
+        return next;
+      });
+      if (activeTab === "following") {
+        setFollowing((prev) => prev.filter((u) => u.id !== userId));
+      }
+    } catch (e) {
+      console.error("Failed to unfollow user:", e);
+    }
+  }, [activeTab]);
+
   const renderUsers = (list: User[]) => (
     <div className={styles.usersList}>
       {list.map((u) => (
-        // @ts-ignore
-        <UserMiniCard key={u.id} user={u} />
+        <UserMiniCard
+          key={u.id}
+          id={u.id}
+          name={u.name}
+          avatar={u.avatar}
+          isFollowing={myFollowingIds.has(u.id)}
+          onFollow={handleFollow}
+          onUnfollow={handleUnfollow}
+        />
       ))}
     </div>
   );
