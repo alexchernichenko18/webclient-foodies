@@ -19,8 +19,8 @@ export const profileApi = {
   },
 
   getMyFavorites: async (): Promise<Recipe[]> => {
-    const { data } = await api.get<Recipe[]>("/recipes/favorites");
-    return data;
+    const { data } = await api.get<{ recipes: Recipe[] }>("/recipes/favorites");
+    return data.recipes;
   },
 
   followUser: async (userId: string): Promise<void> => {
