@@ -2,13 +2,14 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  width: 100%;
+  width: 343px;
 }
 
 @media screen and (min-width: 768px) {
   .filtersWrapper {
     flex-direction: row;
     gap: 16px;
+    width: 100%;
   }
 }
 
@@ -16,6 +17,7 @@
   .filtersWrapper {
     flex-direction: column;
     gap: 18px;
+    width: 330px;
   }
 }
 
@@ -62,7 +64,6 @@
     border-color: #3E4462;
   }
 
-  // Стиль для placeholder опції
   option:first-child {
     color: #3E4462;
   }
