@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Recipe.module.scss";
 
 import heartIcon from "../../assets/icons/icon-heart.svg";
@@ -18,6 +18,7 @@ import { getIngredients, type IngredientDetails as FullIngredient } from "../../
 
 import Avatar from "../../components/Avatar";
 import Image from "../../components/Image";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 type IngredientsById = Record<string, FullIngredient>;
 
@@ -29,12 +30,9 @@ const Recipe = () => {
 
   const [recipe, setRecipe] = useState<RecipeDetails | null>(null);
   const [popular, setPopular] = useState<PopularRecipe[]>([]);
-
   const [ingredientsById, setIngredientsById] = useState<IngredientsById>({});
-
   const [loadingRecipe, setLoadingRecipe] = useState(false);
   const [loadingPopular, setLoadingPopular] = useState(false);
-
   const [favPending, setFavPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -125,9 +123,6 @@ const Recipe = () => {
         : await addRecipeToFavorites(recipe.id);
 
       setRecipe((prev) => (prev ? { ...prev, isFavorite: nextIsFavorite } : prev));
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Failed to update favorites";
-      alert(message);
     } finally {
       setFavPending(false);
     }
@@ -141,18 +136,13 @@ const Recipe = () => {
   async function togglePopularFavorite(e: React.MouseEvent, item: PopularRecipe) {
     e.stopPropagation();
 
-    try {
-      const nextIsFavorite = item.isFavorite
-        ? await removeRecipeFromFavorites(item.id)
-        : await addRecipeToFavorites(item.id);
+    const nextIsFavorite = item.isFavorite
+      ? await removeRecipeFromFavorites(item.id)
+      : await addRecipeToFavorites(item.id);
 
-      setPopular((prev) =>
-        prev.map((p) => (p.id === item.id ? { ...p, isFavorite: nextIsFavorite } : p)),
-      );
-    } catch (e: unknown) {
-      const message = e instanceof Error ? e.message : "Failed to update favorites";
-      alert(message);
-    }
+    setPopular((prev) =>
+      prev.map((p) => (p.id === item.id ? { ...p, isFavorite: nextIsFavorite } : p)),
+    );
   }
 
   function openPopularInNewTab(e: React.MouseEvent, nextId: string) {
@@ -163,13 +153,12 @@ const Recipe = () => {
   return (
     <div className={styles.page}>
       <div className={styles.container}>
-        <div className={styles.breadcrumbs}>
-          <Link to="/" className={styles.breadcrumbLink}>
-            Home
-          </Link>
-          <span className={styles.breadcrumbSep}>/</span>
-          <span className={styles.breadcrumbCurrent}>{recipe?.title ?? "Recipe"}</span>
-        </div>
+        <Breadcrumbs
+          items={[
+            { label: "Home", to: "/" },
+            { label: recipe?.title ?? "Recipe" },
+          ]}
+        />
 
         {!recipeId && <p className={styles.stateText}>Recipe id is missing.</p>}
         {loadingRecipe && <p className={styles.stateText}>Loading recipe...</p>}
@@ -212,8 +201,6 @@ const Recipe = () => {
                 <ul className={styles.ingredientsGrid}>
                   {recipe.ingredients.map((ing) => {
                     const full = ingredientsById[ing.name || ing.id];
-
-
                     const name = full?.name ?? ing.name;
                     const imageUrl = full?.img ?? ing.imageUrl;
                     const measure = ing.measure ?? full?.measure ?? "";
@@ -266,11 +253,6 @@ const Recipe = () => {
                   key={item.id}
                   className={styles.popularCard}
                   onClick={() => openRecipe(item.id)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") openRecipe(item.id);
-                  }}
                 >
                   <div className={styles.popularImageWrap}>
                     <Image src={item.imageUrl} alt={item.title} className={styles.popularImage} />
@@ -282,36 +264,39 @@ const Recipe = () => {
                   </div>
 
                   <div className={styles.popularFooter}>
-                    <div className={styles.popularAuthor} onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/profile/${item.author?.id}`);
-                    }}>
+                    <div
+                      className={styles.popularAuthor}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/profile/${item.author?.id}`);
+                      }}
+                    >
                       <div className={styles.popularAvatar}>
                         <Avatar
                           src={item.author?.avatarUrl ?? undefined}
                           alt={item.author?.name ?? "User"}
                         />
                       </div>
-                      <span className={styles.popularAuthorName}>{item.author?.name ?? ""}</span>
+                      <span className={styles.popularAuthorName}>
+                        {item.author?.name ?? ""}
+                      </span>
                     </div>
 
                     <div className={styles.popularActions}>
                       <button
                         type="button"
-                        aria-label={item.isFavorite ? "Remove from favorites" : "Add to favorites"}
                         className={`${styles.popularIconBtn} ${item.isFavorite ? styles.popularIconBtnActive : ""
                           }`}
                         onClick={(e) => togglePopularFavorite(e, item)}
                       >
-                        <img className={styles.icon} src={heartIcon} alt="" width={18} height={18} />
+                        <img src={heartIcon} alt="" width={18} height={18} />
                       </button>
                       <button
                         type="button"
                         className={styles.popularIconBtn}
-                        aria-label="Open recipe"
                         onClick={(e) => openPopularInNewTab(e, item.id)}
                       >
-                        <img className={styles.icon} src={arrowUpIcon} alt="" width={18} height={18} />
+                        <img src={arrowUpIcon} alt="" width={18} height={18} />
                       </button>
                     </div>
                   </div>

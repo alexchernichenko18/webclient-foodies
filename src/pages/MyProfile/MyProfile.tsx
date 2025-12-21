@@ -1,10 +1,18 @@
 import styles from "./MyProfile.module.scss";
 import UserInfo from "../../components/UserInfo/UserInfo";
 import TabContent from "./components/TabContent";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 const MyProfile = () => {
   return (
     <section className={`f-container ${styles.page}`}>
+      <Breadcrumbs
+        items={[
+          { label: "Home", to: "/" },
+          { label: "Profile" },
+        ]}
+      />
+
       <header className={styles.header}>
         <h1>PROFILE</h1>
 

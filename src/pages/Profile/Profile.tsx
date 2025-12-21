@@ -4,6 +4,7 @@ import styles from "./Profile.module.scss";
 import userInfoStyles from "../../components/UserInfo/UserInfo.module.scss";
 import Button from "../../components/ui/Button/Button";
 import Avatar from "../../components/Avatar";
+import Breadcrumbs from "../../components/Breadcrumbs";
 import { userApi, type User } from "../../api/userApi";
 
 const Profile = () => {
@@ -12,7 +13,6 @@ const Profile = () => {
   const userId = useMemo(() => id?.trim() ?? "", [id]);
 
   const [activeTab, setActiveTab] = useState<"recipes" | "followers">("recipes");
-
   const [user, setUser] = useState<User | null>(null);
   const [loadingUser, setLoadingUser] = useState(false);
   const [userError, setUserError] = useState<string | null>(null);
@@ -58,13 +58,18 @@ const Profile = () => {
     };
   }, [userId, navigate]);
 
-  if (!userId) return null;
-  if (loadingUser) return null;
-  if (userError) return null;
-  if (!user) return null;
+  if (!userId || loadingUser || userError || !user) return null;
 
   return (
     <section className={`f-container ${styles.page}`}>
+      <Breadcrumbs
+        items={[
+          { label: "Home", to: "/" },
+          { label: "Profile", to: "/profile" },
+          { label: user.name },
+        ]}
+      />
+
       <header className={styles.header}>
         <h1>USER PROFILE</h1>
         <p className={styles.subtitle}>
@@ -91,7 +96,6 @@ const Profile = () => {
                   <span className={userInfoStyles.textValueProfile}>{user.email}</span>
                 </p>
               </li>
-
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Added recipes:
@@ -100,7 +104,6 @@ const Profile = () => {
                   </span>
                 </p>
               </li>
-
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Favorites:
@@ -109,7 +112,6 @@ const Profile = () => {
                   </span>
                 </p>
               </li>
-
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Followers:
@@ -118,7 +120,6 @@ const Profile = () => {
                   </span>
                 </p>
               </li>
-
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Following:
@@ -178,10 +179,7 @@ const Profile = () => {
                 <p>No recipes yet.</p>
               </div>
             ) : (
-              <div
-                className={styles.followersList}
-                style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-              />
+              <div className={styles.followersList} />
             )}
           </div>
         </main>

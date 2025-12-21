@@ -131,7 +131,7 @@
 .row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  gap: 20px;
 }
 
 .w50 {
@@ -162,9 +162,7 @@
 
 .selectPill {
   width: 100%;
-
 }
-
 
 .timePill {
   height: 56px;
@@ -304,9 +302,153 @@
   line-height: 1.2;
 }
 
+/* Tablet */
 @media (max-width: 1100px) {
+  .form {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 32px;
+  }
+
+  .left {
+    order: 0;
+  }
+
+  .right {
+    order: 1;
+    gap: 16px;
+  }
+
   .imageDropzone {
     height: 360px;
     border-radius: 22px;
+  }
+
+  .field {
+    margin-bottom: 44px;
+  }
+
+  .label {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+  .form {
+    padding: 16px;
+    gap: 20px;
+  }
+
+  .imageDropzone {
+    height: 220px;
+    border-radius: 18px;
+  }
+
+  .cameraIconWrap {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+  }
+
+  .uploadCta {
+    font-size: 14px;
+  }
+
+  .title {
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .nameInput {
+    input {
+      font-size: 18px;
+      font-weight: 800;
+    }
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .w50 {
+    width: 100%;
+  }
+
+  .timePill {
+    height: auto;
+    gap: 12px;
+  }
+
+  .timeBtn {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .ingredientsRow {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .addIngredientBtn {
+    margin-top: 24px;
+  }
+
+  .ingredientsList {
+    gap: 14px;
+    margin-top: 20px;
+  }
+
+  .ingredientChip {
+    width: 100%;
+    height: auto;
+    padding: 14px;
+    border-radius: 18px;
+    gap: 14px;
+  }
+
+  .ingredientImg {
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
+  }
+
+  .removeChip {
+    top: 10px;
+    right: 12px;
+  }
+
+  .ingredientName {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .ingredientQty {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .actions {
+    margin-top: 8px;
+    padding-top: 10px;
+    gap: 12px;
+  }
+
+  .publishBtn {
+    width: 140px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 360px) {
+  .imageDropzone {
+    height: 200px;
+  }
+
+  .publishBtn {
+    width: 128px;
   }
 }

@@ -1,12 +1,23 @@
+@import "../../styles/_variables.scss";
+
 .breadcrumbs {
-  margin: 24px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 40px;
+
+  font-family: "Mulish", sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
 }
 
 .list {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -15,15 +26,12 @@
 .item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  line-height: 1.2;
-  opacity: 0.8;
+  gap: 8px;
 }
 
 .link {
   text-decoration: none;
-  color: inherit;
+  color: $color-gray;
 
   &:hover {
     text-decoration: underline;
@@ -31,10 +39,11 @@
 }
 
 .current {
-  font-weight: 600;
-  opacity: 0.9;
+  color: $color-black;
+  font-weight: 700;
 }
 
 .sep {
-  opacity: 0.6;
+  color: $color-gray;
+  font-weight: 700;
 }

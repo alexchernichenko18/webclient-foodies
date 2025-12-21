@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import classNames from "classnames";
 import styles from "./Select.module.scss";
 
@@ -11,8 +11,8 @@ interface Option {
 
 interface SelectProps {
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
+  onChange: (event: { target: { value: string; name?: string } }) => void;
+  onBlur?: () => void;
   name?: string;
   placeholder?: string;
   options: Option[];
@@ -30,46 +30,81 @@ const Select = ({
   error,
   className,
 }: SelectProps) => {
-  const [isFocused, setIsFocused] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
 
-  const wrapperClassName = classNames(styles.wrap, className, {
-    [styles.error]: Boolean(error),
-  });
+  const selectedOption = useMemo(
+    () => options.find((o) => o.value === value),
+    [options, value]
+  );
 
-  const hasValue = value !== "";
-  const isPlaceholderShown = !hasValue;
+  useEffect(() => {
+    const handlePointerDown = (e: PointerEvent) => {
+      if (!isOpen) return;
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+        if (onBlur) onBlur();
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [isOpen, onBlur]);
 
   return (
-    <div className={wrapperClassName}>
+    <div
+      ref={wrapperRef}
+      className={classNames(styles.wrap, className, {
+        [styles.error]: Boolean(error),
+      })}
+    >
       <div className={styles.field}>
-        <select
-          className={classNames(styles.select, {
-            [styles.placeholder]: isPlaceholderShown,
-          })}
-          value={value}
-          name={name}
-          onChange={onChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={(e) => {
-            setIsFocused(false);
-            if (onBlur) onBlur(e);
-          }}
+        <button
+          ref={triggerRef}
+          type="button"
+          className={styles.trigger}
+          onClick={() => setIsOpen((p) => !p)}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
         >
-          {placeholder && !hasValue && (
-            <option value="" disabled>
-              {placeholder}
-            </option>
-          )}
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+          <span
+            className={classNames(styles.value, {
+              [styles.placeholder]: !selectedOption,
+            })}
+          >
+            {selectedOption?.label || placeholder}
+          </span>
 
-        <span className={classNames(styles.icon, { [styles.rotate]: isFocused })}>
-          <IconChevronDown />
-        </span>
+          <span className={classNames(styles.icon, { [styles.rotate]: isOpen })}>
+            <IconChevronDown />
+          </span>
+        </button>
+
+        {isOpen && (
+          <div className={styles.dropdown} role="listbox">
+            <div className={styles.options}>
+              {options.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  role="option"
+                  aria-selected={option.value === value}
+                  className={classNames(styles.option, {
+                    [styles.selected]: option.value === value,
+                  })}
+                  onClick={() => {
+                    onChange({ target: { value: option.value, name } });
+                    setIsOpen(false);
+                    triggerRef.current?.focus();
+                  }}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {error && <div className={styles.errorText}>{error}</div>}
