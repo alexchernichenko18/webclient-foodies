@@ -1,7 +1,8 @@
-import { Link } from "react-router-dom";
 import Image from "../Image";
 import styles from "./UserMiniCard.module.scss";
-import { ReactComponent as ArrowIcon } from "../../assets/icons/icon-arrow-up.svg";
+import { ReactComponent as IconArrowUp } from "../../assets/icons/icon-arrow-up.svg";
+import Button from "../ui/Button";
+import { Link } from "react-router-dom";
 
 interface RecipePreview {
   id: string;
@@ -33,11 +34,13 @@ const UserMiniCard = ({
   return (
     <div className={styles.card}>
       <div className={styles.userInfo}>
-        <Image
-          className={styles.avatar}
-          src={avatar || "/images/avatar-placeholder.png"}
-          alt={name}
-        />
+        <Link to={`/profile/${id}`}>
+          <Image
+            className={styles.avatar}
+            src={avatar || "/images/avatar-placeholder.png"}
+            alt={name}
+          />
+        </Link>
         <div className={styles.details}>
           <span className={styles.name}>{name.toUpperCase()}</span>
           <span className={styles.recipesCount}>Own recipes: {recipesCount}</span>
@@ -74,9 +77,7 @@ const UserMiniCard = ({
         </div>
       )}
 
-      <Link to={`/profile/${id}`} className={styles.arrowBtn}>
-        <ArrowIcon className={styles.arrowIcon} />
-      </Link>
+      <Button variant="light" icon={<IconArrowUp />} href={`/profile/${id}`} />
     </div>
   );
 };

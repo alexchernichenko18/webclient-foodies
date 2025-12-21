@@ -3,6 +3,7 @@
 .card {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 24px;
   padding: 20px 0;
   border-bottom: 1px solid $color-border;
@@ -28,6 +29,7 @@
   flex-direction: column;
   gap: 4px;
   padding-top: 8px;
+  margin-right: 60px;
 }
 
 .name {
@@ -78,10 +80,16 @@
 }
 
 .recipePreviews {
-  display: flex;
+  display: none;
   gap: 8px;
   flex: 1;
   justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .recipePreviews {
+    display: flex;
+  }
 }
 
 .recipeThumb {

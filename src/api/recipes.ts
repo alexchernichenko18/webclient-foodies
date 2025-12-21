@@ -13,6 +13,7 @@ export type Recipe = {
   instructions: string;
   time: number;
   img: string | null;
+  imageUrl: string | null;
   isFavorite?: boolean;
   category?: {
     id: string;

@@ -8,6 +8,12 @@
   border-bottom: 1px solid $color-border;
 }
 
+.left {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+}
+
 .thumbWrap {
   width: 100px;
   height: 100px;

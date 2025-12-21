@@ -17,7 +17,9 @@
 }
 
 .page {
-  padding: 0px 16px;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 32px;
   min-height: calc(100vh - 266px);
 }
 
@@ -59,9 +61,6 @@ h1 {
 }
 
 @media (min-width: 768px) {
-  .page {
-    padding: 0px 32px;
-  }
   .layout {
     gap: 40px;
   }
@@ -74,7 +73,7 @@ h1 {
 
 @media (min-width: 1440px) {
   .page {
-    padding: 0px 80px;
+    padding: 0px;
   }
   .layout {
     flex-direction: row;
