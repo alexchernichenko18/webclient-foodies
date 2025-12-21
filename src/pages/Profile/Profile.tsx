@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 import styles from "./Profile.module.scss";
 import userInfoStyles from "../../components/UserInfo/UserInfo.module.scss";
 import Button from "../../components/ui/Button/Button";
@@ -81,8 +83,8 @@ const Profile = () => {
           prev ? { ...prev, followersAmount: (prev.followersAmount ?? 0) + 1 } : prev
         );
       }
-    } catch (e) {
-      console.error("Failed to toggle follow:", e);
+    } catch {
+      iziToast.error({ title: "Error", message: "Failed to update follow status" });
     } finally {
       setIsFollowLoading(false);
     }

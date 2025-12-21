@@ -1,5 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useSelector } from "react-redux";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 import { addRecipeToFavorites, removeRecipeFromFavorites, type Recipe } from "../../../api/recipes";
 import { RootState } from "../../../store";
 import styles from "./RecipeCard.module.scss";
@@ -66,7 +68,7 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
       setFavorite(previousFavorite);
       isUpdatingFromClick.current = false;
       const message = e instanceof Error ? e.message : "Failed to update favorites";
-      alert(message);
+      iziToast.error({ title: "Error", message });
     } finally {
       setFavPending(false);
     }

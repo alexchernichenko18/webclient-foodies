@@ -16,12 +16,9 @@ const initialState: CategoriesState = {
 
 export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue: string }>("categories/fetchCategories", async (_, { rejectWithValue }) => {
   try {
-    console.log("fetchCategories thunk: calling getCategoriesRequest");
     const response = await getCategoriesRequest();
-    console.log("fetchCategories thunk: response received", response.data);
     return response.data;
-  } catch (error: unknown) {
-    console.error("fetchCategories thunk: error", error);
+  } catch {
     return rejectWithValue("Failed to fetch categories");
   }
 });
