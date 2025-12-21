@@ -16,7 +16,7 @@
 
   @media (min-width: 1440px) {
     max-width: 1440px;
-    padding: 0 100px;
+    padding: 0 80px;
   }
 }
 
@@ -61,7 +61,7 @@
 .content {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 40px;
 }
 
 @media (min-width: 768px) {
@@ -75,7 +75,7 @@
 @media (min-width: 1440px) {
   .content {
     flex-direction: row;
-    gap: 100px;
+    gap: 130px;
   }
 }
 
