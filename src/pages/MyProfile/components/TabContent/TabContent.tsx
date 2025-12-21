@@ -174,6 +174,8 @@ const TabContent = (props: Props) => {
           id={u.id}
           name={u.name}
           avatar={u.avatar}
+          recipesCount={u.recipesAmount}
+          recipes={u.recipes}
           isFollowing={myFollowingIds.has(u.id)}
           onFollow={handleFollow}
           onUnfollow={handleUnfollow}

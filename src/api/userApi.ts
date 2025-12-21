@@ -1,5 +1,11 @@
 import api from "./client";
 
+export interface RecipePreview {
+  id: string;
+  thumb?: string;
+  name: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -10,6 +16,7 @@ export interface User {
   followersAmount?: number;
   followingsAmount?: number;
   isFollowing?: boolean;
+  recipes?: RecipePreview[];
 }
 
 export const userApi = {
