@@ -44,6 +44,7 @@ export type RecipeListItem = {
   description: string;
   time: number;
   imageUrl: string;
+  img: string;
   author: ApiAuthor | null;
   favoritesCount: number;
   isFavorite: boolean;
