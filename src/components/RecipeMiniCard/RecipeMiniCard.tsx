@@ -1,43 +1,45 @@
+import { Link } from "react-router-dom";
 import styles from "./RecipeMiniCard.module.scss";
-import type { RecipeListItem } from "../../api/recipes";
+import type { Recipe } from "../../api/recipes";
 import Image from "../Image";
+import { ReactComponent as ArrowIcon } from "../../assets/icons/icon-arrow-up.svg";
+import { ReactComponent as TrashIcon } from "../../assets/icons/icon-trash.svg";
 
 interface RecipeMiniCardProps {
-  recipe: RecipeListItem;
-  onToggleFavorite?: (recipeId: string, isFavorite: boolean) => void;
+  recipe: Recipe;
+  onDelete?: (recipeId: string) => void;
 }
 
-const RecipeMiniCard = ({ recipe, onToggleFavorite }: RecipeMiniCardProps) => {
+const RecipeMiniCard = ({ recipe, onDelete }: RecipeMiniCardProps) => {
   return (
     <article className={styles.card}>
       <div className={styles.thumbWrap}>
         <Image
           className={styles.thumb}
-          src={recipe.imageUrl || "/images/recipe-placeholder.jpg"}
-          alt={recipe.title}
+          src={recipe.img || "/images/recipe-placeholder.jpg"}
+          alt={recipe.name}
         />
       </div>
 
       <div className={styles.body}>
-        <h3 className={styles.title}>{recipe.title}</h3>
+        <h3 className={styles.title}>{recipe.name}</h3>
         <p className={styles.desc}>{recipe.description}</p>
+      </div>
 
-        <div className={styles.meta}>
-          <span className={styles.time}>{recipe.time} min</span>
-
+      <div className={styles.actions}>
+        <Link to={`/recipe/${recipe.id}`} className={styles.arrowBtn}>
+          <ArrowIcon className={styles.arrowIcon} />
+        </Link>
+        {onDelete && (
           <button
             type="button"
-            className={`${styles.favBtn} ${
-              recipe.isFavorite ? styles.favActive : ""
-            }`}
-            onClick={() => onToggleFavorite?.(recipe.id, recipe.isFavorite)}
-            aria-label={
-              recipe.isFavorite ? "Remove from favorites" : "Add to favorites"
-            }
+            className={styles.deleteBtn}
+            onClick={() => onDelete(recipe.id)}
+            aria-label="Delete recipe"
           >
-            ♥
+            <TrashIcon className={styles.trashIcon} />
           </button>
-        </div>
+        )}
       </div>
     </article>
   );

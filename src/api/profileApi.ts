@@ -40,4 +40,12 @@ export const profileApi = {
     const { data } = await api.get<Recipe[]>(`/recipes/user/${userId}`);
     return data;
   },
+
+  deleteMyRecipe: async (recipeId: string): Promise<void> => {
+    await api.delete(`/recipes/${recipeId}`);
+  },
+
+  removeFromFavorites: async (recipeId: string): Promise<void> => {
+    await api.delete(`/recipes/${recipeId}/favorite`);
+  },
 };

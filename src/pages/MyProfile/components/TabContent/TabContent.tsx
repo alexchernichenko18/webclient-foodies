@@ -166,6 +166,24 @@ const TabContent = (props: Props) => {
     }
   }, [activeTab]);
 
+  const handleDeleteRecipe = useCallback(async (recipeId: string) => {
+    try {
+      await profileApi.deleteMyRecipe(recipeId);
+      setRecipes((prev) => prev.filter((r) => r.id !== recipeId));
+    } catch (e) {
+      console.error("Failed to delete recipe:", e);
+    }
+  }, []);
+
+  const handleRemoveFavorite = useCallback(async (recipeId: string) => {
+    try {
+      await profileApi.removeFromFavorites(recipeId);
+      setFavorites((prev) => prev.filter((r) => r.id !== recipeId));
+    } catch (e) {
+      console.error("Failed to remove from favorites:", e);
+    }
+  }, []);
+
   const renderUsers = (list: User[]) => (
     <div className={styles.usersList}>
       {list.map((u) => (
@@ -184,11 +202,10 @@ const TabContent = (props: Props) => {
     </div>
   );
 
-  const renderRecipes = (list: Recipe[]) => (
+  const renderRecipes = (list: Recipe[], onDelete?: (id: string) => void) => (
     <div className={styles.recipesList}>
       {list.map((r) => (
-        // @ts-ignore
-        <RecipeMiniCard key={r.id} recipe={r} />
+        <RecipeMiniCard key={r.id} recipe={r} onDelete={onDelete} />
       ))}
     </div>
   );
@@ -199,10 +216,14 @@ const TabContent = (props: Props) => {
 
     switch (activeTab) {
       case "recipes":
-        return recipes.length ? renderRecipes(recipes) : <p className={styles.message}>{emptyMessage.recipes}</p>;
+        return recipes.length
+          ? renderRecipes(recipes, props.mode === "my" ? handleDeleteRecipe : undefined)
+          : <p className={styles.message}>{emptyMessage.recipes}</p>;
 
       case "favorites":
-        return favorites.length ? renderRecipes(favorites) : <p className={styles.message}>{emptyMessage.favorites}</p>;
+        return favorites.length
+          ? renderRecipes(favorites, handleRemoveFavorite)
+          : <p className={styles.message}>{emptyMessage.favorites}</p>;
 
       case "followers":
         return followers.length ? renderUsers(followers) : <p className={styles.message}>{emptyMessage.followers}</p>;
