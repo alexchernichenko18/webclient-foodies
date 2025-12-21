@@ -7,6 +7,7 @@ export interface IngredientUI {
   id: string;
   name: string;
   quantity: string;
+  img?: string;
 }
 
 export interface AddRecipeFormValues {
@@ -19,3 +20,9 @@ export interface AddRecipeFormValues {
   ingredients: string[];
   img: File | null;
 }
+
+export type IngredientOption = {
+  id: string;
+  name: string;
+  img?: string;
+};

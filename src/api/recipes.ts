@@ -6,6 +6,38 @@ export type ApiAuthor = {
   avatarUrl: string | null;
 };
 
+export type Recipe = {
+  id: string;
+  name: string;
+  description: string;
+  instructions: string;
+  time: number;
+  img: string | null;
+  isFavorite?: boolean;
+  category?: {
+    id: string;
+    name: string;
+  };
+  area?: {
+    id: string;
+    name: string;
+  };
+  ingredients?: RecipeIngredientDTO[];
+  owner?: {
+    id: string;
+    avatar: string | null;
+    name: string;
+  };
+};
+
+export type RecipesResponse = {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  recipes: Recipe[];
+};
+
 export type RecipeListItem = {
   id: string;
   title: string;
@@ -44,6 +76,15 @@ type ListResponse<T> = {
   items: T[];
   total?: number;
   totalPages?: number;
+  page?: number;
+  limit?: number;
+};
+
+export type RecipeFilters = {
+  categoryId?: string | null;
+  areaId?: string | null;
+  ingredientName?: string | null;
+  ownerId?: string | null;
   page?: number;
   limit?: number;
 };
