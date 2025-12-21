@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 import Categories from "../../components/Categories";
 import Recipes from "../../components/Recipes";
 import { RootState } from "../../store";
@@ -67,15 +69,8 @@ const Main = () => {
       setRecipes(response.recipes);
       setTotalPages(response.totalPages);
       setCurrentPage(page);
-      
-      console.log("Recipes loaded:", response);
-      // Діагностика: перевіряємо чи є isFavorite в рецептах
-      response.recipes.forEach((recipe, index) => {
-        console.log(`Recipe ${index} (${recipe.name}): isFavorite =`, recipe.isFavorite);
-      });
-    } catch (error) {
-      alert("Failed to load recipes. Please try again.");
-      console.error("Error loading recipes:", error);
+    } catch {
+      iziToast.error({ title: "Error", message: "Failed to load recipes" });
     } finally {
       setLoading(false);
     }
@@ -101,8 +96,6 @@ const Main = () => {
   };
 
   const handleFilterChange = (selectedId: string, filterType: "ingredients" | "areas") => {
-    console.log(`Filter changed - Type: ${filterType}, ID: ${selectedId}`);
-
     const newFilters = {
       ...filters,
       [filterType === "ingredients" ? "ingredientId" : "areaId"]: selectedId,

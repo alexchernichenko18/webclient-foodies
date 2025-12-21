@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
+import iziToast from "izitoast";
+import "izitoast/dist/css/iziToast.min.css";
 import styles from "./TabContent.module.scss";
 import TabMenu, { type TabMenuItem } from "../../../../components/ui/TabMenu";
 
@@ -145,8 +147,8 @@ const TabContent = (props: Props) => {
     try {
       await profileApi.followUser(userId);
       setMyFollowingIds((prev) => new Set(Array.from(prev).concat(userId)));
-    } catch (e) {
-      console.error("Failed to follow user:", e);
+    } catch {
+      iziToast.error({ title: "Error", message: "Failed to follow user" });
     }
   }, []);
 
@@ -161,8 +163,8 @@ const TabContent = (props: Props) => {
       if (activeTab === "following") {
         setFollowing((prev) => prev.filter((u) => u.id !== userId));
       }
-    } catch (e) {
-      console.error("Failed to unfollow user:", e);
+    } catch {
+      iziToast.error({ title: "Error", message: "Failed to unfollow user" });
     }
   }, [activeTab]);
 
@@ -170,8 +172,8 @@ const TabContent = (props: Props) => {
     try {
       await profileApi.deleteMyRecipe(recipeId);
       setRecipes((prev) => prev.filter((r) => r.id !== recipeId));
-    } catch (e) {
-      console.error("Failed to delete recipe:", e);
+    } catch {
+      iziToast.error({ title: "Error", message: "Failed to delete recipe" });
     }
   }, []);
 
@@ -179,8 +181,8 @@ const TabContent = (props: Props) => {
     try {
       await profileApi.removeFromFavorites(recipeId);
       setFavorites((prev) => prev.filter((r) => r.id !== recipeId));
-    } catch (e) {
-      console.error("Failed to remove from favorites:", e);
+    } catch {
+      iziToast.error({ title: "Error", message: "Failed to remove from favorites" });
     }
   }, []);
 

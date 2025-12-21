@@ -1,23 +1,25 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import LayoutPublic from "./layouts/LayoutPublic";
 import LayoutPrivate from "./layouts/LayoutPrivate";
-
-import Main from "./pages/Main";
-import Test from "./pages/Test";
-import Category from "./pages/Category";
-import AddRecipe from "./pages/AddRecipe";
-import Recipe from "./pages/Recipe";
-import MyProfile from "./pages/MyProfile";
-import Profile from "./pages/Profile";
 import Modals from "./components/Modals/Modals";
+
+const Main = lazy(() => import("./pages/Main"));
+const Test = lazy(() => import("./pages/Test"));
+const Category = lazy(() => import("./pages/Category"));
+const AddRecipe = lazy(() => import("./pages/AddRecipe"));
+const Recipe = lazy(() => import("./pages/Recipe"));
+const MyProfile = lazy(() => import("./pages/MyProfile"));
+const Profile = lazy(() => import("./pages/Profile"));
 
 function App() {
   return (
     <>
       <Modals />
 
-      <Routes>
+      <Suspense fallback={null}>
+        <Routes>
         {/* PUBLIC LAYOUT */}
         <Route element={<LayoutPublic />}>
           <Route path="/" element={<Main />} />
@@ -36,7 +38,8 @@ function App() {
         <Route path="/test" element={<Test />} />
         {/* 404 -> redirect */}
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </>
   );
 }
