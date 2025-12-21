@@ -24,4 +24,7 @@ export const userApi = {
   getCurrentUserInfo: () => {
     return api.get<User>(`/users/me`);
   },
+  getUserById: (id: string) => {
+    return api.get<User>(`/users/${id}`);
+  },
 };

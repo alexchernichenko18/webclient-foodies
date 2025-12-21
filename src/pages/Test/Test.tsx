@@ -6,6 +6,9 @@ import Input from "../../components/ui/Input";
 import TextArea from "../../components/ui/TextArea";
 import Select from "../../components/ui/Select";
 
+import Profile from "../Profile/Profile";
+
+
 import styles from "./Test.module.scss";
 
 import { ReactComponent as IconArrowUp } from "../../assets/icons/icon-arrow-up.svg";
@@ -184,8 +187,13 @@ const Test = () => {
 
         <Button variant="light" icon={<IconPlus />} />
         <Button variant="dark" icon={<IconPlus />} />
+
+
+        
       </div>
-    </div >
+        <h2 style={{ marginBottom: "20px" }}>Other Profile Component View:</h2>
+        <Profile />
+      </div>    
   );
 };
 

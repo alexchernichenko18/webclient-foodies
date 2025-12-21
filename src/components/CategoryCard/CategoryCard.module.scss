@@ -4,7 +4,7 @@
   position: relative;
   width: 100%;
   border-radius: 30px;
-  background-color: $color-gray;
+  background-color: $color-dark;
   overflow: hidden;
 
   // Mobile: 343 × 250px
@@ -47,6 +47,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
+  opacity: 0.8;
 }
 
 .overlay {
@@ -106,7 +107,9 @@
   padding: 0;
   flex-shrink: 0;
 
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.18);

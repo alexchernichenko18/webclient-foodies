@@ -1,0 +1,78 @@
+.filtersWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+@media screen and (min-width: 768px) {
+  .filtersWrapper {
+    flex-direction: row;
+    gap: 16px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .filtersWrapper {
+    flex-direction: column;
+    gap: 18px;
+  }
+}
+
+.filterGroup {
+  width: 100%;
+  position: relative;
+}
+
+@media screen and (min-width: 768px) {
+  .filterGroup {
+    flex: 1;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .filterGroup {
+    flex: none;
+  }
+}
+
+.filterSelect {
+  width: 100%;
+  padding: 14px 18px;
+  padding-right: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #3E4462;
+  background-color: transparent;
+  cursor: pointer;
+  transition: border-color 0.3s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='%233E4462' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 18px center;
+
+  &:focus {
+    outline: none;
+    border-color: #3E4462;
+  }
+
+  &:hover {
+    border-color: #3E4462;
+  }
+
+  // Стиль для placeholder опції
+  option:first-child {
+    color: #3E4462;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .filterSelect {
+    padding: 16px 20px;
+    padding-right: 55px;
+    font-size: 14px;
+    background-position: right 20px center;
+  }
+}

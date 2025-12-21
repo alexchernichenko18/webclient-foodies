@@ -91,6 +91,20 @@ export async function getRecipeById(recipeId: string): Promise<RecipeDetails> {
   return data;
 }
 
+export async function getRecipes(filters: RecipeFilters = {}): Promise<RecipesResponse> {
+  const { data } = await api.get<RecipesResponse>("/recipes", {
+    params: {
+      categoryId: filters.categoryId || undefined,
+      areaId: filters.areaId || undefined,
+      ingredientName: filters.ingredientName || undefined,
+      ownerId: filters.ownerId || undefined,
+      page: filters.page || 1,
+      limit: filters.limit || 10,
+    },
+  });
+  return data;
+}
+
 export async function addRecipeToFavorites(recipeId: string): Promise<boolean> {
   const { data } = await api.post<{ isFavorite: boolean }>(`/recipes/${recipeId}/favorite`);
   return data.isFavorite;
@@ -99,4 +113,39 @@ export async function addRecipeToFavorites(recipeId: string): Promise<boolean> {
 export async function removeRecipeFromFavorites(recipeId: string): Promise<boolean> {
   const { data } = await api.delete<{ isFavorite: boolean }>(`/recipes/${recipeId}/favorite`);
   return data.isFavorite;
+}
+
+export type CreateRecipePayload = {
+  name: string;
+  description: string;
+  instructions: string;
+  time: number;
+  categoryId: string;
+  areaId: string;
+  ingredientIds: string[];
+  img: File | null;
+};
+
+export type CreatedRecipe = {
+  id: string;
+};
+
+export async function createRecipe(payload: CreateRecipePayload): Promise<CreatedRecipe> {
+  const formData = new FormData();
+
+  formData.append("name", payload.name);
+  formData.append("description", payload.description);
+  formData.append("instructions", payload.instructions);
+  formData.append("time", String(payload.time));
+  formData.append("categoryId", payload.categoryId);
+  formData.append("areaId", payload.areaId);
+
+  payload.ingredientIds.forEach((ing) => formData.append("ingredientIds", ing));
+
+  if (payload.img) {
+    formData.append("img", payload.img);
+  }
+
+  const { data } = await api.post<CreatedRecipe>("/recipes", formData);
+  return data;
 }

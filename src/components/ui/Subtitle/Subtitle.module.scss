@@ -1,10 +1,11 @@
 @import "../../../styles/variables";
 
 .subtitle {
-  font-weight: 400;
+  max-width: 50%;
+  font-weight: 500;
   font-size: 14px;
   line-height: 1.5;
-  color: $color-gray;
+  color: $color-dark;
   margin: 0;
 
   @media (min-width: 768px) {

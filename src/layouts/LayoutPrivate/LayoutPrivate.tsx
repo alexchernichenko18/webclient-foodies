@@ -4,6 +4,7 @@ import Header from "../../components/Header/Header";
 
 import { RootState } from "../../store";
 import styles from "./LayoutPrivate.module.scss";
+import Footer from "../../components/Footer/Footer";
 
 const LayoutPrivate = () => {
   const isAuth = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -16,6 +17,7 @@ const LayoutPrivate = () => {
     <div className={styles.wrap}>
       <Header variant="light" />
       <Outlet />
+      <Footer />
     </div>
   );
 };

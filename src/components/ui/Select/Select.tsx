@@ -12,6 +12,7 @@ interface Option {
 interface SelectProps {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLSelectElement>) => void;
   name?: string;
   placeholder?: string;
   options: Option[];
@@ -22,6 +23,7 @@ interface SelectProps {
 const Select = ({
   value,
   onChange,
+  onBlur,
   name,
   placeholder,
   options,
@@ -45,17 +47,20 @@ const Select = ({
             [styles.placeholder]: isPlaceholderShown,
           })}
           value={value}
-          onChange={onChange}
           name={name}
+          onChange={onChange}
           onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onBlur={(e) => {
+            setIsFocused(false);
+            if (onBlur) onBlur(e);
+          }}
         >
           {placeholder && !hasValue && (
             <option value="" disabled>
               {placeholder}
             </option>
           )}
-          {options.map(option => (
+          {options.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
             </option>
