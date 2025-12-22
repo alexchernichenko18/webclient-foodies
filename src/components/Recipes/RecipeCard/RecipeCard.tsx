@@ -1,16 +1,18 @@
 import { useEffect, useState, useRef } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import { addRecipeToFavorites, removeRecipeFromFavorites, type Recipe } from "../../../api/recipes";
 import { RootState } from "../../../store";
+import { openSignInModal } from "../../../store/slices/modalSlice";
+import { getCurrentUser } from "../../../store/user/operations";
 import styles from "./RecipeCard.module.scss";
 import Button from "../../ui/Button";
 import { ReactComponent as IconArrowUp } from "../../../assets/icons/icon-arrow-up.svg";
 import { ReactComponent as IconHeart } from "../../../assets/icons/icon-heart.svg";
 import Avatar from "../../Avatar";
 import Image from "../../Image";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -19,6 +21,8 @@ interface RecipeCardProps {
 }
 
 const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCardProps) => {
+  const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   // Використовуємо recipe.isFavorite якщо воно є, інакше isFavorite проп
@@ -36,7 +40,11 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
   }, [favoriteFromProps]);
 
   async function handleFavoriteClick() {
-    if (!isAuthenticated || favPending) return;
+    if (!isAuthenticated) {
+      dispatch(openSignInModal());
+      return;
+    }
+    if (favPending) return;
 
     // Зберігаємо попереднє значення на випадок помилки
     const previousFavorite = favorite;
@@ -57,6 +65,9 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
       if (onFavoriteChange) {
         onFavoriteChange(recipe.id, nextIsFavorite);
       }
+
+      // Оновлюємо дані користувача після зміни favorites
+      dispatch(getCurrentUser());
 
       // Після синхронізації дозволяємо useEffect оновлювати з пропів
       // Використовуємо setTimeout, щоб дати час React оновити пропи
@@ -86,15 +97,26 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
       <p className={styles.text}>{recipe.description}</p>
 
       <div className={styles.info}>
-        <NavLink className={styles.userInfo} to={`/profile/${recipe.owner?.id}`}>
+        <div 
+          className={styles.userInfo} 
+          onClick={(e) => {
+            e.preventDefault();
+            if (!isAuthenticated) {
+              dispatch(openSignInModal());
+            } else {
+              navigate(`/profile/${recipe.owner?.id}`);
+            }
+          }}
+          style={{ cursor: 'pointer' }}
+        >
           <div className={styles.avatarContainer}>
             <Avatar src={recipe?.owner?.avatar} alt={recipe?.owner?.name} />
           </div>
           <h4 className={styles.name}>{recipe?.owner?.name}</h4>
-        </NavLink>
+        </div>
 
         <div className={styles.buttons}>
-          {isAuthenticated && <Button key={`favorite-${recipe.id}-${favorite}`} onClick={handleFavoriteClick} variant={favorite ? "dark" : "light"} icon={<IconHeart />} disabled={favPending} />}
+          <Button key={`favorite-${recipe.id}-${favorite}`} onClick={handleFavoriteClick} variant={favorite ? "dark" : "light"} icon={<IconHeart />} disabled={favPending} />
 
           <Button href={`/recipe/${recipe.id}`} variant="light" icon={<IconArrowUp />} />
         </div>

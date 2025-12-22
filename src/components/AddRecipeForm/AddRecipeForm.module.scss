@@ -302,6 +302,57 @@
   line-height: 1.2;
 }
 
+/* Tablet */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .form {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 32px;
+    max-width: 768px;
+    margin: 0 auto;
+  }
+
+  .left {
+    order: 0;
+  }
+
+  .right {
+    order: 1;
+    gap: 20px;
+  }
+
+  .imageDropzone {
+    height: 380px;
+    border-radius: 24px;
+  }
+
+  .field {
+    margin-bottom: 48px;
+  }
+
+  .label {
+    font-size: 18px;
+    margin-bottom: 14px;
+  }
+
+  .title {
+    margin: 0 0 12px;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #111;
+  }
+
+  .ingredientsRow {
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .ingredientChip {
+    width: calc(50% - 10px);
+  }
+}
+
 @media (max-width: 1100px) {
   .form {
     grid-template-columns: 1fr;

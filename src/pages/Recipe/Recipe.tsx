@@ -1,5 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../store";
+import { openSignInModal } from "../../store/slices/modalSlice";
+import { getCurrentUser } from "../../store/user/operations";
 import styles from "./Recipe.module.scss";
 
 import heartIcon from "../../assets/icons/icon-heart.svg";
@@ -25,6 +29,8 @@ type IngredientsById = Record<string, FullIngredient>;
 const Recipe = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const dispatch = useDispatch<any>();
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
   const recipeId = useMemo(() => id?.trim() ?? "", [id]);
 
@@ -114,6 +120,11 @@ const Recipe = () => {
 
   async function toggleFavorite() {
     if (!recipe) return;
+    
+    if (!isAuthenticated) {
+      dispatch(openSignInModal());
+      return;
+    }
 
     try {
       setFavPending(true);
@@ -123,6 +134,9 @@ const Recipe = () => {
         : await addRecipeToFavorites(recipe.id);
 
       setRecipe((prev) => (prev ? { ...prev, isFavorite: nextIsFavorite } : prev));
+
+      // Оновлюємо дані користувача після зміни favorites
+      dispatch(getCurrentUser());
     } finally {
       setFavPending(false);
     }
@@ -136,6 +150,11 @@ const Recipe = () => {
   async function togglePopularFavorite(e: React.MouseEvent, item: PopularRecipe) {
     e.stopPropagation();
 
+    if (!isAuthenticated) {
+      dispatch(openSignInModal());
+      return;
+    }
+
     const nextIsFavorite = item.isFavorite
       ? await removeRecipeFromFavorites(item.id)
       : await addRecipeToFavorites(item.id);
@@ -143,6 +162,9 @@ const Recipe = () => {
     setPopular((prev) =>
       prev.map((p) => (p.id === item.id ? { ...p, isFavorite: nextIsFavorite } : p)),
     );
+
+    // Оновлюємо дані користувача після зміни favorites
+    dispatch(getCurrentUser());
   }
 
   function openPopularInNewTab(e: React.MouseEvent, nextId: string) {
@@ -184,7 +206,17 @@ const Recipe = () => {
                 <p className={styles.description}>{recipe.description}</p>
 
                 {recipe.author && (
-                  <div className={styles.authorRow}>
+                  <div 
+                    className={styles.authorRow}
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        dispatch(openSignInModal());
+                      } else {
+                        navigate(`/profile/${recipe.author?.id}`);
+                      }
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className={styles.authorAvatar}>
                       <Avatar src={recipe.author.avatarUrl ?? undefined} alt={recipe.author.name} />
                     </div>
@@ -268,7 +300,11 @@ const Recipe = () => {
                       className={styles.popularAuthor}
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate(`/profile/${item.author?.id}`);
+                        if (!isAuthenticated) {
+                          dispatch(openSignInModal());
+                        } else {
+                          navigate(`/profile/${item.author?.id}`);
+                        }
                       }}
                     >
                       <div className={styles.popularAvatar}>

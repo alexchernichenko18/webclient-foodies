@@ -8,7 +8,8 @@ import { ReactComponent as IconYoutube } from "../../assets/icons/icon-youtube.s
 const Footer = () => {
   return (
     <footer className={styles.footer}>
-      <div className={styles.topRow}>
+      <div className={styles.container}>
+        <div className={styles.topRow}>
         <Link to="/" className={styles.logo}>
           foodies
         </Link>
@@ -48,11 +49,12 @@ const Footer = () => {
             </a>
           </li>
         </ul>
+        </div>
+
+        <div className={styles.divider} />
+
+        <p className={styles.copy}>©{new Date().getFullYear()}, Foodies. All rights reserved</p>
       </div>
-
-      <div className={styles.divider} />
-
-      <p className={styles.copy}>©{new Date().getFullYear()}, Foodies. All rights reserved</p>
     </footer>
   );
 };

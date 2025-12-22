@@ -27,4 +27,14 @@
 
 .error {
   color: $color-error;
+  font-size: 12px;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.validationError {
+  color: $color-error;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 4px;
 }

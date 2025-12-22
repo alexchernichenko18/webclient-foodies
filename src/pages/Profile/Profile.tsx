@@ -32,11 +32,7 @@ const Profile = () => {
         setLoadingUser(true);
         setUserError(null);
 
-        const [currentRes, profileRes, followingList] = await Promise.all([
-          userApi.getCurrentUserInfo(),
-          userApi.getUserById(userId),
-          profileApi.getMyFollowing(),
-        ]);
+        const [currentRes, profileRes, followingList] = await Promise.all([userApi.getCurrentUserInfo(), userApi.getUserById(userId), profileApi.getMyFollowing()]);
 
         if (!isActive) return;
 
@@ -73,16 +69,15 @@ const Profile = () => {
       if (isFollowing) {
         await profileApi.unfollowUser(user.id);
         setIsFollowing(false);
-        setUser((prev) =>
-          prev ? { ...prev, followersAmount: Math.max(0, (prev.followersAmount ?? 1) - 1) } : prev
-        );
       } else {
         await profileApi.followUser(user.id);
         setIsFollowing(true);
-        setUser((prev) =>
-          prev ? { ...prev, followersAmount: (prev.followersAmount ?? 0) + 1 } : prev
-        );
       }
+      // Оновлюємо дані профіля після зміни follow статусу
+      const updatedProfile = await userApi.getUserById(user.id);
+      setUser(updatedProfile.data);
+      // Оновлюємо TabContent через key prop для форсування ре-рендеру
+      // (TabContent сам оновлює дані через useEffect)
     } catch {
       iziToast.error({ title: "Error", message: "Failed to update follow status" });
     } finally {
@@ -94,19 +89,11 @@ const Profile = () => {
 
   return (
     <section className={`f-container ${styles.page}`}>
-      <Breadcrumbs
-        items={[
-          { label: "Home", to: "/" },
-          { label: "Profile", to: "/profile" },
-          { label: user.name },
-        ]}
-      />
+      <Breadcrumbs items={[{ label: "Home", to: "/" }, { label: "Profile", to: "/profile" }, { label: user.name }]} />
 
       <header className={styles.header}>
         <h1>USER PROFILE</h1>
-        <p className={styles.subtitle}>
-          Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us.
-        </p>
+        <p className={styles.subtitle}>Reveal your culinary art, share your favorite recipe and create gastronomic masterpieces with us.</p>
       </header>
 
       <div className={styles.layout}>
@@ -132,53 +119,40 @@ const Profile = () => {
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Added recipes:
-                  <span className={userInfoStyles.textValueProfile}>
-                    {user.recipesAmount ?? 0}
-                  </span>
+                  <span className={userInfoStyles.textValueProfile}>{user.recipesAmount ?? 0}</span>
                 </p>
               </li>
 
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Favorites:
-                  <span className={userInfoStyles.textValueProfile}>
-                    {user.favoriteRecipesAmount ?? 0}
-                  </span>
+                  <span className={userInfoStyles.textValueProfile}>{user.favoriteRecipesAmount ?? 0}</span>
                 </p>
               </li>
 
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Followers:
-                  <span className={userInfoStyles.textValueProfile}>
-                    {user.followersAmount ?? 0}
-                  </span>
+                  <span className={userInfoStyles.textValueProfile}>{user.followersAmount ?? 0}</span>
                 </p>
               </li>
 
               <li>
                 <p className={userInfoStyles.textProfile}>
                   Following:
-                  <span className={userInfoStyles.textValueProfile}>
-                    {user.followingsAmount ?? 0}
-                  </span>
+                  <span className={userInfoStyles.textValueProfile}>{user.followingsAmount ?? 0}</span>
                 </p>
               </li>
             </ul>
           </div>
 
-          <Button
-            variant={isFollowing ? "outlined-dark" : "dark"}
-            expanded
-            onClick={handleFollowToggle}
-            disabled={isFollowLoading}
-          >
+          <Button variant={isFollowing ? "outlined-dark" : "dark"} expanded onClick={handleFollowToggle} disabled={isFollowLoading}>
             {isFollowLoading ? "..." : isFollowing ? "UNFOLLOW" : "FOLLOW"}
           </Button>
         </div>
 
         <main className={styles.main}>
-          <TabContent mode="user" userId={user.id} />
+          <TabContent key={`${user.id}-${user.followersAmount}`} mode="user" userId={user.id} />
         </main>
       </div>
     </section>

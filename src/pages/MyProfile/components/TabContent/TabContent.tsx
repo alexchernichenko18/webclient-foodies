@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 import styles from "./TabContent.module.scss";
@@ -7,17 +8,17 @@ import TabMenu, { type TabMenuItem } from "../../../../components/ui/TabMenu";
 import { profileApi } from "../../../../api/profileApi";
 import type { User } from "../../../../api/userApi";
 import type { Recipe } from "../../../../api/recipes";
+import { getCurrentUser } from "../../../../store/user/operations";
 
 import UserMiniCard from "../../../../components/UserMiniCard";
 import RecipeMiniCard from "../../../../components/RecipeMiniCard";
 
 type ProfileTab = "recipes" | "favorites" | "followers" | "following";
 
-type Props =
-  | { mode: "my" }
-  | { mode: "user"; userId: string };
+type Props = { mode: "my" } | { mode: "user"; userId: string };
 
 const TabContent = (props: Props) => {
+  const dispatch = useDispatch<any>();
   const [activeTab, setActiveTab] = useState<ProfileTab>("recipes");
 
   const [followers, setFollowers] = useState<User[]>([]);
@@ -28,6 +29,13 @@ const TabContent = (props: Props) => {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Функція для оновлення даних користувача в Redux store
+  const refreshUserInfo = useCallback(() => {
+    if (props.mode === "my") {
+      dispatch(getCurrentUser());
+    }
+  }, [dispatch, props.mode]);
 
   const menuItems: TabMenuItem<ProfileTab>[] = useMemo(() => {
     const base: TabMenuItem<ProfileTab>[] = [
@@ -50,16 +58,12 @@ const TabContent = (props: Props) => {
 
   const emptyMessage = useMemo<Record<ProfileTab, string>>(
     () => ({
-      recipes: props.mode === "my"
-        ? "Nothing has been added to your recipes list yet. Please add your first recipe."
-        : "No recipes yet.",
+      recipes: props.mode === "my" ? "Nothing has been added to your recipes list yet. Please add your first recipe." : "No recipes yet.",
       favorites: "Nothing has been added to your favorite recipes list yet.",
-      followers: props.mode === "my"
-        ? "There are currently no followers on your account."
-        : "This user has no followers yet.",
+      followers: props.mode === "my" ? "There are currently no followers on your account." : "This user has no followers yet.",
       following: "Your account currently has no subscriptions to other users.",
     }),
-    [props.mode],
+    [props.mode]
   );
 
   useEffect(() => {
@@ -83,10 +87,7 @@ const TabContent = (props: Props) => {
               return;
             }
             case "followers": {
-              const [followersList, followingList] = await Promise.all([
-                profileApi.getMyFollowers(),
-                profileApi.getMyFollowing(),
-              ]);
+              const [followersList, followingList] = await Promise.all([profileApi.getMyFollowers(), profileApi.getMyFollowing()]);
               if (isActive) {
                 setFollowers(followersList);
                 setMyFollowingIds(new Set(followingList.map((u) => u.id)));
@@ -113,10 +114,7 @@ const TabContent = (props: Props) => {
             return;
           }
           case "followers": {
-            const [followersList, followingList] = await Promise.all([
-              profileApi.getUserFollowers(userId),
-              profileApi.getMyFollowing(),
-            ]);
+            const [followersList, followingList] = await Promise.all([profileApi.getUserFollowers(userId), profileApi.getMyFollowing()]);
             if (isActive) {
               setFollowers(followersList);
               setMyFollowingIds(new Set(followingList.map((u) => u.id)));
@@ -143,48 +141,78 @@ const TabContent = (props: Props) => {
     };
   }, [activeTab, props]);
 
-  const handleFollow = useCallback(async (userId: string) => {
-    try {
-      await profileApi.followUser(userId);
-      setMyFollowingIds((prev) => new Set(Array.from(prev).concat(userId)));
-    } catch {
-      iziToast.error({ title: "Error", message: "Failed to follow user" });
-    }
-  }, []);
-
-  const handleUnfollow = useCallback(async (userId: string) => {
-    try {
-      await profileApi.unfollowUser(userId);
-      setMyFollowingIds((prev) => {
-        const next = new Set(prev);
-        next.delete(userId);
-        return next;
-      });
-      if (activeTab === "following") {
-        setFollowing((prev) => prev.filter((u) => u.id !== userId));
+  const handleFollow = useCallback(
+    async (userId: string) => {
+      try {
+        await profileApi.followUser(userId);
+        setMyFollowingIds((prev) => new Set(Array.from(prev).concat(userId)));
+        // Оновлюємо список followers якщо ми на вкладці followers
+        if (activeTab === "followers" && props.mode === "user") {
+          const updatedFollowers = await profileApi.getUserFollowers(props.userId);
+          setFollowers(updatedFollowers);
+        }
+        // Оновлюємо дані користувача в профілі
+        refreshUserInfo();
+      } catch {
+        iziToast.error({ title: "Error", message: "Failed to follow user" });
       }
-    } catch {
-      iziToast.error({ title: "Error", message: "Failed to unfollow user" });
-    }
-  }, [activeTab]);
+    },
+    [activeTab, props, refreshUserInfo]
+  );
 
-  const handleDeleteRecipe = useCallback(async (recipeId: string) => {
-    try {
-      await profileApi.deleteMyRecipe(recipeId);
-      setRecipes((prev) => prev.filter((r) => r.id !== recipeId));
-    } catch {
-      iziToast.error({ title: "Error", message: "Failed to delete recipe" });
-    }
-  }, []);
+  const handleUnfollow = useCallback(
+    async (userId: string) => {
+      try {
+        await profileApi.unfollowUser(userId);
+        setMyFollowingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(userId);
+          return next;
+        });
+        if (activeTab === "following") {
+          setFollowing((prev) => prev.filter((u) => u.id !== userId));
+        }
+        // Оновлюємо список followers якщо ми на вкладці followers
+        if (activeTab === "followers" && props.mode === "user") {
+          const updatedFollowers = await profileApi.getUserFollowers(props.userId);
+          setFollowers(updatedFollowers);
+        }
+        // Оновлюємо дані користувача в профілі
+        refreshUserInfo();
+      } catch {
+        iziToast.error({ title: "Error", message: "Failed to unfollow user" });
+      }
+    },
+    [activeTab, props, refreshUserInfo]
+  );
 
-  const handleRemoveFavorite = useCallback(async (recipeId: string) => {
-    try {
-      await profileApi.removeFromFavorites(recipeId);
-      setFavorites((prev) => prev.filter((r) => r.id !== recipeId));
-    } catch {
-      iziToast.error({ title: "Error", message: "Failed to remove from favorites" });
-    }
-  }, []);
+  const handleDeleteRecipe = useCallback(
+    async (recipeId: string) => {
+      try {
+        await profileApi.deleteMyRecipe(recipeId);
+        setRecipes((prev) => prev.filter((r) => r.id !== recipeId));
+        // Оновлюємо дані користувача в профілі
+        refreshUserInfo();
+      } catch {
+        iziToast.error({ title: "Error", message: "Failed to delete recipe" });
+      }
+    },
+    [refreshUserInfo]
+  );
+
+  const handleRemoveFavorite = useCallback(
+    async (recipeId: string) => {
+      try {
+        await profileApi.removeFromFavorites(recipeId);
+        setFavorites((prev) => prev.filter((r) => r.id !== recipeId));
+        // Оновлюємо дані користувача в профілі
+        refreshUserInfo();
+      } catch {
+        iziToast.error({ title: "Error", message: "Failed to remove from favorites" });
+      }
+    },
+    [refreshUserInfo]
+  );
 
   const renderUsers = (list: User[]) => (
     <div className={styles.usersList}>
@@ -218,14 +246,10 @@ const TabContent = (props: Props) => {
 
     switch (activeTab) {
       case "recipes":
-        return recipes.length
-          ? renderRecipes(recipes, props.mode === "my" ? handleDeleteRecipe : undefined)
-          : <p className={styles.message}>{emptyMessage.recipes}</p>;
+        return recipes.length ? renderRecipes(recipes, props.mode === "my" ? handleDeleteRecipe : undefined) : <p className={styles.message}>{emptyMessage.recipes}</p>;
 
       case "favorites":
-        return favorites.length
-          ? renderRecipes(favorites, handleRemoveFavorite)
-          : <p className={styles.message}>{emptyMessage.favorites}</p>;
+        return favorites.length ? renderRecipes(favorites, handleRemoveFavorite) : <p className={styles.message}>{emptyMessage.favorites}</p>;
 
       case "followers":
         return followers.length ? renderUsers(followers) : <p className={styles.message}>{emptyMessage.followers}</p>;

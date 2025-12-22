@@ -4,6 +4,7 @@ import MainTitle from "../ui/MainTitle";
 import Subtitle from "../ui/Subtitle";
 import RecipesList from "./RecipesList/RecipesList";
 import RecipeFilters from "./RecipeFilters/RecipeFilters";
+import { ReactComponent as IconArrowUp } from "../../assets/icons/icon-arrow-up.svg";
 import styles from "./Recipes.module.scss";
 
 interface RecipesProps {
@@ -18,31 +19,28 @@ interface RecipesProps {
   onPageChange: (page: number) => void;
 }
 
-const Recipes = ({ 
-  recipes, 
-  loading, 
-  onBack, 
-  categoryName, 
-  onFilterChange, 
-  onFavoriteChange,
-  currentPage,
-  totalPages,
-  onPageChange
-}: RecipesProps) => {
-  
+const Recipes = ({ recipes, loading, onBack, categoryName, onFilterChange, onFavoriteChange, currentPage, totalPages, onPageChange }: RecipesProps) => {
   const sectionRef = useRef<HTMLElement>(null);
-  
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Прокручування до верху контейнера при рендері
+  useEffect(() => {
+    if (containerRef.current) {
+      containerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
   // Прокручування до початку списку при зміні сторінки
   useEffect(() => {
-    if (sectionRef.current && currentPage > 1) {
-      sectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (containerRef.current && currentPage > 1) {
+      containerRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [currentPage]);
-  
+
   // Функція для генерації масиву номерів сторінок
   const getPageNumbers = () => {
     const pages: (number | string)[] = [];
-    
+
     if (totalPages <= 7) {
       // Якщо сторінок мало (до 7), показуємо всі
       for (let i = 1; i <= totalPages; i++) {
@@ -50,52 +48,48 @@ const Recipes = ({
       }
     } else {
       // Якщо сторінок багато, показуємо з ellipsis
-      
+
       // Завжди показуємо першу сторінку
       pages.push(1);
-      
+
       // Додаємо ellipsis якщо потрібно
       if (currentPage > 3) {
-        pages.push('...');
+        pages.push("...");
       }
-      
+
       // Показуємо сторінки навколо поточної
       for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
         pages.push(i);
       }
-      
+
       // Додаємо ellipsis якщо потрібно
       if (currentPage < totalPages - 2) {
-        pages.push('...');
+        pages.push("...");
       }
-      
+
       // Завжди показуємо останню сторінку
       pages.push(totalPages);
     }
-    
+
     return pages;
   };
 
   return (
     <section className={styles.recipes} ref={sectionRef}>
-      <div className={styles.container}>
+      <div className={styles.container} ref={containerRef}>
         <button onClick={onBack} className={styles.backButton}>
-          ← BACK
+          <IconArrowUp style={{ transform: "rotate(-135deg)" }} />
+          <span>BACK</span>
         </button>
 
         <div className={styles.header}>
           <MainTitle>{categoryName || "ALL CATEGORIES"}</MainTitle>
-          <Subtitle>
-            Go on a taste journey, where every sip is a sophisticated creative chord, and every dessert is an expression of the most refined gastronomic desires.
-          </Subtitle>
+          <Subtitle>Go on a taste journey, where every sip is a sophisticated creative chord, and every dessert is an expression of the most refined gastronomic desires.</Subtitle>
         </div>
 
         <div className={styles.content}>
           <aside className={styles.sidebar}>
-            <RecipeFilters 
-              recipes={recipes} 
-              changeHandler={onFilterChange} 
-            />
+            <RecipeFilters recipes={recipes} changeHandler={onFilterChange} />
           </aside>
 
           <div className={styles.main}>
@@ -109,44 +103,30 @@ const Recipes = ({
                 {totalPages > 1 && (
                   <div className={styles.pagination}>
                     {/* Кнопка "Попередня сторінка" */}
-                    <button 
-                      className={styles.pageButton}
-                      onClick={() => onPageChange(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      aria-label="Previous page"
-                    >
+                    <button className={styles.pageButton} onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1} aria-label="Previous page">
                       ←
                     </button>
-                    
+
                     {/* Номери сторінок */}
-                    {getPageNumbers().map((page, index) => (
-                      page === '...' ? (
-                        <span 
-                          key={`ellipsis-${index}`} 
-                          className={styles.ellipsis}
-                        >
+                    {getPageNumbers().map((page, index) =>
+                      page === "..." ? (
+                        <span key={`ellipsis-${index}`} className={styles.ellipsis}>
                           ...
                         </span>
                       ) : (
-                        <button 
+                        <button
                           key={page}
-                          className={`${styles.pageButton} ${currentPage === page ? styles.active : ''}`}
+                          className={`${styles.pageButton} ${currentPage === page ? styles.active : ""}`}
                           onClick={() => onPageChange(page as number)}
                           aria-label={`Go to page ${page}`}
-                          aria-current={currentPage === page ? 'page' : undefined}
-                        >
+                          aria-current={currentPage === page ? "page" : undefined}>
                           {page}
                         </button>
                       )
-                    ))}
-                    
+                    )}
+
                     {/* Кнопка "Наступна сторінка" */}
-                    <button 
-                      className={styles.pageButton}
-                      onClick={() => onPageChange(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      aria-label="Next page"
-                    >
+                    <button className={styles.pageButton} onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Next page">
                       →
                     </button>
                   </div>
