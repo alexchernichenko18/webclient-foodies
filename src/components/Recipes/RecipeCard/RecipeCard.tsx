@@ -12,7 +12,7 @@ import { ReactComponent as IconArrowUp } from "../../../assets/icons/icon-arrow-
 import { ReactComponent as IconHeart } from "../../../assets/icons/icon-heart.svg";
 import Avatar from "../../Avatar";
 import Image from "../../Image";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -97,8 +97,8 @@ const RecipeCard = ({ recipe, isFavorite = false, onFavoriteChange }: RecipeCard
       <p className={styles.text}>{recipe.description}</p>
 
       <div className={styles.info}>
-        <div 
-          className={styles.userInfo} 
+        <div
+          className={styles.userInfo}
           onClick={(e) => {
             e.preventDefault();
             if (!isAuthenticated) {
