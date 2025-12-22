@@ -12,6 +12,7 @@ interface InputProps {
   type?: InputType;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
   name?: string;
   placeholder?: string;
   error?: string;
@@ -22,6 +23,7 @@ const Input = ({
   type = "text",
   value,
   onChange,
+  onBlur,
   name,
   placeholder,
   error,
@@ -43,6 +45,7 @@ const Input = ({
           type={inputType}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
           name={name}
           placeholder={placeholder}
           className={styles.input}

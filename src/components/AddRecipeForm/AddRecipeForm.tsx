@@ -99,13 +99,14 @@ const AddRecipeForm = () => {
         );
 
         const ingredientsData = ingRes.data.filter((i: any) => Boolean(i.description));
-        setIngredientsOptions(
-          ingredientsData.map((i: any) => ({
+        const sortedIngredients = ingredientsData
+          .map((i: any) => ({
             id: i.id,
             name: i.name,
             img: i.img,
           }))
-        );
+          .sort((a: IngredientOption, b: IngredientOption) => a.name.localeCompare(b.name));
+        setIngredientsOptions(sortedIngredients);
       } catch {
         iziToast.error({
           title: "Error",
