@@ -334,57 +334,57 @@ const AddRecipeForm = () => {
         </div>
 
         <div className={styles.field}>
-  <p className={styles.label}>INGREDIENTS</p>
+          <p className={styles.label}>INGREDIENTS</p>
 
-  <div className={styles.ingredientsRow}>
-    <Select
-      value={selectedIngredient}
-      onChange={(e) => setSelectedIngredient(e.target.value)}
-      options={ingredientsOptions.map((i) => ({ value: i.id, label: i.name }))}
-      placeholder="Add the ingredient"
-      className={styles.selectPill}
-    />
+          <div className={styles.ingredientsRow}>
+            <Select
+              value={selectedIngredient}
+              onChange={(e) => setSelectedIngredient(e.target.value)}
+              options={ingredientsOptions.map((i) => ({ value: i.id, label: i.name }))}
+              placeholder="Add the ingredient"
+              className={styles.selectPill}
+            />
 
-    <input
-      value={ingredientQuantity}
-      onChange={(e) => setIngredientQuantity(e.target.value)}
-      placeholder="Enter quantity"
-      className={styles.inputLine}
-    />
-  </div>
-
-  <Button
-    type="button"
-    variant="outlined-light"
-    onClick={handleAddIngredient}
-    className={styles.addIngredientBtn}
-  >
-    ADD INGREDIENT +
-  </Button>
-
-  {showError("ingredients") && <p className={styles.fieldError}>{formik.errors.ingredients as string}</p>}
-
-  {!!ingredientsUI.length && (
-    <div className={styles.ingredientsList}>
-      {ingredientsUI.map((i) => (
-        <div key={i.id} className={styles.ingredientChip}>
-          {i.img && <img src={i.img} alt={i.name} className={styles.ingredientImg} />}
-          <div className={styles.ingredientMeta}>
-            <button
-              type="button"
-              className={styles.removeChip}
-              onClick={() => handleRemoveIngredient(i.id)}
-            >
-              ✕
-            </button>
-            <span className={styles.ingredientName}>{i.name}</span>
-            <span className={styles.ingredientQty}>{i.quantity}</span>
+            <input
+              value={ingredientQuantity}
+              onChange={(e) => setIngredientQuantity(e.target.value)}
+              placeholder="Enter quantity"
+              className={styles.inputLine}
+            />
           </div>
+
+          <Button
+            type="button"
+            variant="outlined-light"
+            onClick={handleAddIngredient}
+            className={styles.addIngredientBtn}
+          >
+            ADD INGREDIENT +
+          </Button>
+
+          {showError("ingredients") && <p className={styles.fieldError}>{formik.errors.ingredients as string}</p>}
+
+          {!!ingredientsUI.length && (
+            <div className={styles.ingredientsList}>
+              {ingredientsUI.map((i) => (
+                <div key={i.id} className={styles.ingredientChip}>
+                  {i.img && <img src={i.img} alt={i.name} className={styles.ingredientImg} />}
+                  <div className={styles.ingredientMeta}>
+                    <button
+                      type="button"
+                      className={styles.removeChip}
+                      onClick={() => handleRemoveIngredient(i.id)}
+                    >
+                      ✕
+                    </button>
+                    <span className={styles.ingredientName}>{i.name}</span>
+                    <span className={styles.ingredientQty}>{i.quantity}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      ))}
-    </div>
-  )}
-</div>
 
         <div className={styles.field}>
           <p className={styles.label}>RECIPE PREPARATION</p>
