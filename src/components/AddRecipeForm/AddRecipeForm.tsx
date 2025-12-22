@@ -235,7 +235,7 @@ const AddRecipeForm = () => {
       </div>
 
       <div className={styles.right}>
-        <h1 className={styles.title}>ADD RECIPE</h1>
+        
 
         <Input
           name="name"
@@ -246,7 +246,7 @@ const AddRecipeForm = () => {
           }}
           // @ts-ignore
           onBlur={formik.handleBlur}
-          placeholder="Enter recipe name"
+          placeholder="The name of the recipe"
           className={classNames(styles.nameInput, showError("name") && styles.inputError)}
         />
         {showError("name") && <p className={styles.fieldError}>{formik.errors.name}</p>}
